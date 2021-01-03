@@ -31,9 +31,9 @@ private:
 		POSITION_VERTEXBUFFER,
 		NUM_BUFFERS
 	};
-	GLuint vertexArrayObject;
-	GLuint vertexArrayBuffers[NUM_BUFFERS]; // create our array of buffers
-	unsigned int drawCount; //how much of the vertexArrayObject do we want to draw
+	GLuint vertexArrayObject; //create array object
+	GLuint vertexArrayBuffers[NUM_BUFFERS]; // create array of buffers
+	unsigned int drawCount; //how much of the vertexArrayObject needs to be drawn
 
 };
 
