@@ -4,7 +4,7 @@
 
 MainGame::MainGame()
 {
-	_gameState = GameState::PLAY;
+	_gameState = GameState::PLAY; //sets the gamestate to PLAY
 	Display* _gameDisplay = new Display(); //new display
 }
 
@@ -14,18 +14,18 @@ MainGame::~MainGame()
 
 void MainGame::run()
 {
-	initSystems(); 
-	gameLoop();
+	initSystems(); //initialise the systems
+	gameLoop(); //runs the gameloop
 }
 
 void MainGame::initSystems()
 {
-	_gameDisplay.initDisplay(); 
+	_gameDisplay.initDisplay(); //initialise the display
 }
 
 void MainGame::gameLoop()
 {
-	while (_gameState != GameState::EXIT)
+	while (_gameState != GameState::EXIT) //when gamestate changes to exit the while is executed no more
 	{
 		processInput();
 		drawGame();
@@ -41,7 +41,7 @@ void MainGame::processInput()
 		switch (evnt.type)
 		{
 			case SDL_QUIT:
-				_gameState = GameState::EXIT;
+				_gameState = GameState::EXIT; //if application terminates the gamestate changes to EXIT
 				break;
 		}
 	}
@@ -50,10 +50,8 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
-	glClearDepth(1.0); 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
+	_gameDisplay.ClearDisplay(); //method that clears the display
 
-	
 	// old code for testing only 
 	glEnableClientState(GL_COLOR_ARRAY); 
 	glBegin(GL_TRIANGLES);
@@ -63,5 +61,5 @@ void MainGame::drawGame()
 	glVertex2f(500, 500);
 	glEnd();
 
-	_gameDisplay.swapBuffer();
+	_gameDisplay.swapBuffer(); //method that swap the buffers
 }

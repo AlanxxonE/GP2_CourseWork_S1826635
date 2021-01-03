@@ -4,20 +4,23 @@
 Display::Display()
 {
 	_window = nullptr; //initialise to generate null access violation for debugging. 
-	_screenWidth = 1024;
-	_screenHeight = 768; 
+	_screenWidth = 1024; //sets the window width
+	_screenHeight = 768; //sets the window height
 }
 
 Display::~Display()
 {
+	SDL_GL_DeleteContext(sdlGlContext); //deletes the initialised global context
+	SDL_DestroyWindow(_window); //destroys the window declared in the Display class
+	SDL_Quit(); //quits the executable
 }
 
 void Display::returnError(std::string errorString)
 {
-	std::cout << errorString << std::endl;
+	std::cout << errorString << std::endl; //display a specific error passed as an argument
 	std::cout << "press any  key to quit...";
 	int in;
-	std::cin >> in;
+	std::cin >> in; //waits for user input before exiting the application
 	SDL_Quit();
 }
 
@@ -37,24 +40,30 @@ void Display::initDisplay()
 
 	_window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, SDL_WINDOW_OPENGL); // create window
 
-	if (_window == nullptr)
+	if (_window == nullptr) //check for window creation failure
 	{
 		returnError("window failed to create");
 	}
 
-	SDL_GLContext glContext = SDL_GL_CreateContext(_window);
+	SDL_GLContext glContext = SDL_GL_CreateContext(_window); //create opengl context
 
-	if (glContext == nullptr)
+	if (glContext == nullptr) //checks for context creation failure
 	{
 		returnError("SDL_GL context failed to create");
 	}
 
-	GLenum error = glewInit();
+	GLenum error = glewInit(); //generate opengl enum glew initialisation
 
-	if (error != GLEW_OK)
+	if (error != GLEW_OK) //check for glew initialization failure
 	{
 		returnError("GLEW failed to initialise");
 	}
 
-	glClearColor(0.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 1.0f, 1.0f, 1.0f); //clears color
+}
+
+void Display::ClearDisplay()
+{
+	glClearDepth(1.0); //clears depth
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
 }
