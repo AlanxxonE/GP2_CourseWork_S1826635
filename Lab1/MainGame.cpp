@@ -61,9 +61,22 @@ void MainGame::drawGame()
 
 	Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0])); //create new Mesh, size calcuated by number of bytes of an array
 	Shader shader("..\\res\\shader"); //create new Shader
+	Texture texture("..\\res\\bricks.jpg"); //load texture
+
+	Transform transform;
+	transform.SetPos(glm::vec3(sinf(counter), 0.0, 0.0));
+	transform.SetRot(glm::vec3(0.0, 0.0, counter * 5));
+	transform.SetScale(glm::vec3(sinf(counter), sinf(counter), sinf(counter)));
 
 	shader.Bind(); //bind the shader
+	shader.Update(transform);
+	texture.Bind(0);
 	mesh.Draw(); //draw the mesh
+
+	counter = counter + 0.01f;
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnd();
 
 	//Red Triangle Draw
 	/*

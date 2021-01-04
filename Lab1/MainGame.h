@@ -5,6 +5,8 @@
 #include "Display.h" 
 #include "Mesh.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "transform.h"
 
 enum class GameState{PLAY, EXIT};
 
@@ -26,5 +28,6 @@ private:
 	Display _gameDisplay;
 	GameState _gameState;
 
+	float counter;
 };
 
