@@ -73,6 +73,20 @@ void MainGame::drawGame()
 	texture.Bind(0);
 	mesh.Draw(); //draw the mesh
 
+	Mesh mesh1(vertices, sizeof(vertices) / sizeof(vertices[0])); //create new Mesh, size calcuated by number of bytes of an array
+	Shader shader1("..\\res\\shader"); //create new Shader
+	Texture texture1("..\\res\\Water.jpg"); //load texture
+
+	Transform transform1;
+	transform1.SetPos(glm::vec3(cosf(-counter), 0.0, 0.0));
+	transform1.SetRot(glm::vec3(0.0, 0.0, -counter * 5));
+	transform1.SetScale(glm::vec3(cosf(-counter), cosf(-counter), cosf(-counter)));
+
+	shader1.Bind(); //bind the shader
+	shader1.Update(transform1);
+	texture1.Bind(0);
+	mesh1.Draw(); //draw the mesh
+
 	counter = counter + 0.01f;
 
 	//Red Triangle Draw
