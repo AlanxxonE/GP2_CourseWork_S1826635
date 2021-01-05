@@ -8,7 +8,9 @@ class Texture
 {
 
 public:
-	Texture(const std::string& fileName);
+	Texture();
+
+	void init(const std::string& fileName); //initialise texture
 	void Bind(unsigned int unit); // bind up to 32 textures
 	~Texture();
 

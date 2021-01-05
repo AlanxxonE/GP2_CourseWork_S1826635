@@ -1,8 +1,10 @@
 #pragma once
 #include <glm\glm.hpp>
 #include <GL\glew.h>
+#include <string>
+#include "obj_loader.h"
 
-class Vertex
+struct Vertex
 {
 public:
 	Vertex(const glm::vec3& pos, const glm::vec2& texCoord)
@@ -27,15 +29,26 @@ class Mesh
 {
 
 public:
+
+	//previous mesh constructor
 	Mesh(Vertex* vertices, unsigned int numVertices);
+
+	Mesh();
 	~Mesh();
 	void Draw();
+
+	void init(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices); //initialise new mesh
+	void loadModel(const std::string& filename); //load 3d object from file
+	void initModel(const IndexedModel& model); //draw the loaded model based on vertices sequentially based on order
+
 
 private:
 	enum
 	{
 		POSITION_VERTEXBUFFER,
 		TEXCOORD_VB,
+		NORMAL_VB,
+		INDEX_VB,
 		NUM_BUFFERS
 	};
 

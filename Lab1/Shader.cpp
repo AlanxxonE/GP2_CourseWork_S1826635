@@ -2,7 +2,12 @@
 #include <iostream>
 #include <fstream>
 
-Shader::Shader(const std::string& filename)
+Shader::Shader()
+{
+
+}
+
+void Shader::init(const std::string& filename)
 {
 	program = glCreateProgram(); //create the shader program
 
@@ -17,6 +22,7 @@ Shader::Shader(const std::string& filename)
 
 	glBindAttribLocation(program, 0, "position"); //bind the attribute location
 	glBindAttribLocation(program, 1, "texCoord"); //bind the attribute texture coordinates
+	glBindAttribLocation(program, 2, "normals"); //bind the attribute for the normals
 
 	glLinkProgram(program); //create executables that will run on the GPU shaders
 	CheckShaderError(program, GL_LINK_STATUS, true, "Error: Shader program linking failed"); //check for link error
@@ -47,6 +53,12 @@ void Shader::Update(const Transform& transform)
 {
 	glm::mat4 model = transform.GetModel();
 	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &model[0][0]);
+}
+
+void Shader::Update(const Transform& transform, const Camera& camera)
+{
+	glm::mat4 mvp = camera.GetViewProjection() * transform.GetModel();
+	glUniformMatrix4fv(uniforms[TRANSFORM_U], 1, GLU_FALSE, &mvp[0][0]);
 }
 
 GLuint Shader::CreateShader(const std::string& text, unsigned int type)

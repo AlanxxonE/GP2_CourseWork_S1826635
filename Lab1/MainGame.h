@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "transform.h"
+#include "Camera.h"
 
 enum class GameState{PLAY, EXIT};
 
@@ -27,6 +28,10 @@ private:
 
 	Display _gameDisplay;
 	GameState _gameState;
+	Mesh mesh1;
+	Camera myCamera;
+	Texture texture;
+	Shader shader;
 
 	float counter;
 };

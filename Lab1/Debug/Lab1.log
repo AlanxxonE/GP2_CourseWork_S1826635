@@ -1,6 +1,4 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Lab1.vcxproj, Labs.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  obj_loader.cpp
-C:\Users\aless\Desktop\University\MODULES\GP2\GP2_Labs\obj_loader.cpp(378,16): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-  MainGame.cpp
-  Generating Code...
+  Mesh.cpp
+C:\Users\aless\Desktop\University\MODULES\GP2\GP2_CourseWork_S1826635\Lab1\Mesh.cpp(14,20): warning C4018: '<': signed/unsigned mismatch
   Lab1.vcxproj -> C:\Users\aless\Desktop\University\MODULES\GP2\GP2_CourseWork_S1826635\Debug\GP2_CourseWork_S1826635.exe

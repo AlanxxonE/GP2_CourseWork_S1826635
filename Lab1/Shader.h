@@ -2,17 +2,21 @@
 #include <string>
 #include <GL\glew.h>
 #include "Transform.h"
+#include "Camera.h"
 
 class Shader
 {
 
 public:
 
-	Shader(const std::string& filename);
+	Shader();
+	
+	void init(const std::string& filename);
 
 	void Bind(); //set gpu to use our shaders
 
 	void Update(const Transform& transform); //update shader class to run transform math
+	void Update(const Transform& transform, const Camera& camera); //update shader class with camera functionality
 
 	std::string LoadShader(const std::string& fileName);
 

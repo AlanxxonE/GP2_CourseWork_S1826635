@@ -3,12 +3,22 @@
 #include <cassert>
 #include <iostream>
 
-Texture::Texture(const std::string& fileName)
+Texture::Texture()
+{
+
+}
+
+Texture::~Texture()
+{
+	glDeleteTextures(1, &textureHandler); //delete textures, arguments: number of and address of textures
+}
+
+void Texture::init(const std::string& fileName)
 {
 	int textureWidth, textureHeight, numberOfComponents; //width, height, and number of components of the image
 
 	//method that loads the image from file, passing the addresses of the integers aforementioned to write the data
-	unsigned char* imageData = stbi_load((fileName).c_str(), &textureWidth, &textureHeight, &numberOfComponents, 4); 
+	unsigned char* imageData = stbi_load((fileName).c_str(), &textureWidth, &textureHeight, &numberOfComponents, 4);
 
 	if (imageData == NULL) //check the image data loaded
 	{
@@ -29,14 +39,9 @@ Texture::Texture(const std::string& fileName)
 
 	//send texture to the GPU
 	//parameters: Target, Mipmapping Level, Pixel Format, Width, Height, Border Size, Input Format, Data Type of Texture, Images Data
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData); 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 
 	stbi_image_free(imageData); //delete the data from CPU 
-}
-
-Texture::~Texture()
-{
-	glDeleteTextures(1, &textureHandler); //delete textures, arguments: number of and address of textures
 }
 
 void Texture::Bind(unsigned int unit)

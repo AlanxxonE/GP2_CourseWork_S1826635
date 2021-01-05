@@ -2,6 +2,9 @@
 #include <iostream>
 #include <string>
 
+unsigned int indices[] = { 0, 1, 2 };
+Transform transform;
+
 MainGame::MainGame()
 {
 	_gameState = GameState::PLAY; //sets the gamestate to PLAY
@@ -21,6 +24,12 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay(); //initialise the display
+
+	mesh1.loadModel("..\\res\\monkey3.obj"); //load 3D model from file
+	texture.init("..\\res\\bricks.jpg"); //
+	shader.init("..\\res\\shader"); //new shader
+
+	myCamera.initCamera(glm::vec3(0, 0, -20), 70.0f, (float)_gameDisplay.GetWidth() / _gameDisplay.GetHeight(), 0.01f, 1000.0f); //initialise camera
 }
 
 void MainGame::gameLoop()
@@ -50,8 +59,24 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
-	_gameDisplay.ClearDisplay(); //method that clears the display
+	//previous clear display
+	//_gameDisplay.ClearDisplay(); //method that clears the display
 
+	_gameDisplay.ClearDisplay(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//transform.SetPos(glm::vec3(sinf(counter), 0.0, sinf(counter) * 10));
+	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
+	//transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
+
+	shader.Bind();
+	shader.Update(transform, myCamera);
+	texture.Bind(0);
+	mesh1.Draw();
+
+	counter = counter + 0.001f;
+
+	//Water&Brick rotating triangles
+	/*
 	Vertex vertices[] = { Vertex(glm::vec3(-0.5, -0.5, 0), glm::vec2(0.0, 0.0)), Vertex(glm::vec3(0, 0.5, 0), glm::vec2(0.5, 1.0)), Vertex(glm::vec3(0.5, -0.5, 0), glm::vec2(1.0, 0.0)) };
 
 	Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0])); //create new Mesh, size calcuated by number of bytes of an array
@@ -83,6 +108,8 @@ void MainGame::drawGame()
 	mesh1.Draw(); //draw the mesh
 
 	counter = counter + 0.01f;
+
+	*/
 
 	//Red Mesh Draw
 	/*

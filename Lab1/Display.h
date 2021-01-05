@@ -13,7 +13,11 @@ public:
 	~Display();
 	void initDisplay();
 	void swapBuffer();
-	void ClearDisplay(); //method to clear the display
+	void ClearDisplay();
+	void ClearDisplay(float r, float g, float b, float a);
+
+	float GetWidth();
+	float GetHeight();
 
 private:
 

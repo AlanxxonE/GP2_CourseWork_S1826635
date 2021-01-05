@@ -4,8 +4,8 @@
 Display::Display()
 {
 	_window = nullptr; //initialise to generate null access violation for debugging. 
-	_screenWidth = 1024; //sets the window width
-	_screenHeight = 768; //sets the window height
+	_screenWidth = 1024.0f; //sets the window width
+	_screenHeight = 768.0f; //sets the window height
 }
 
 Display::~Display()
@@ -38,7 +38,7 @@ void Display::initDisplay()
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); // set up double buffer   
 
-	_window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, SDL_WINDOW_OPENGL); // create window
+	_window = SDL_CreateWindow("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)_screenWidth, (int)_screenHeight, SDL_WINDOW_OPENGL); // create window
 
 	if (_window == nullptr) //check for window creation failure
 	{
@@ -59,6 +59,9 @@ void Display::initDisplay()
 		returnError("GLEW failed to initialise");
 	}
 
+	glEnable(GL_DEPTH_TEST); //enable z-buffering 
+	glEnable(GL_CULL_FACE); //only draw faces facing the camera
+
 	glClearColor(0.0f, 1.0f, 1.0f, 1.0f); //clears color
 }
 
@@ -66,4 +69,20 @@ void Display::ClearDisplay()
 {
 	glClearDepth(1.0); //clears depth
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
+}
+
+void Display::ClearDisplay(float r, float g, float b, float a)
+{
+	glClearColor(r, g, b, a); //clears specific color values
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear colour and depth buffer - set colour to colour defined in glClearColor
+}
+
+float Display::GetWidth()
+{
+	return _screenWidth;
+}
+
+float Display::GetHeight()
+{
+	return _screenHeight;
 }
