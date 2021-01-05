@@ -75,9 +75,6 @@ void MainGame::drawGame()
 
 	counter = counter + 0.01f;
 
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnd();
-
 	//Red Triangle Draw
 	/*
 	glEnableClientState(GL_COLOR_ARRAY); 

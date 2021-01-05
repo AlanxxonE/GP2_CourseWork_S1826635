@@ -34,6 +34,11 @@ Texture::Texture(const std::string& fileName)
 	stbi_image_free(imageData); //delete the data from CPU 
 }
 
+Texture::~Texture()
+{
+	glDeleteTextures(1, &textureHandler); //delete textures, arguments: number of and address of textures
+}
+
 void Texture::Bind(unsigned int unit)
 {
 	assert(unit >= 0 && unit <= 31); /// check we are working with one of the 32 textures
@@ -41,9 +46,4 @@ void Texture::Bind(unsigned int unit)
 	glActiveTexture(GL_TEXTURE0 + unit); //set acitve texture unit
 
 	glBindTexture(GL_TEXTURE_2D, textureHandler); //bind texture, arguments: type of and texture to bind to unit
-}
-
-Texture::~Texture()
-{
-	glDeleteTextures(1, &textureHandler); //delete textures, arguments: number of and address of textures
 }
