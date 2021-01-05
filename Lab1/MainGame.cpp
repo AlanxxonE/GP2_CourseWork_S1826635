@@ -54,11 +54,6 @@ void MainGame::drawGame()
 
 	Vertex vertices[] = { Vertex(glm::vec3(-0.5, -0.5, 0), glm::vec2(0.0, 0.0)), Vertex(glm::vec3(0, 0.5, 0), glm::vec2(0.5, 1.0)), Vertex(glm::vec3(0.5, -0.5, 0), glm::vec2(1.0, 0.0)) };
 
-	//Red Mesh Draw
-	/*
-	Vertex vertices[] = { Vertex(glm::vec3(-1, -1, 0)), Vertex(glm::vec3(0, 1, 0)), Vertex(glm::vec3(1, -1, 0)) }; //array of vertices defined by their positions
-	*/
-
 	Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0])); //create new Mesh, size calcuated by number of bytes of an array
 	Shader shader("..\\res\\shader"); //create new Shader
 	Texture texture("..\\res\\bricks.jpg"); //load texture
@@ -88,6 +83,11 @@ void MainGame::drawGame()
 	mesh1.Draw(); //draw the mesh
 
 	counter = counter + 0.01f;
+
+	//Red Mesh Draw
+	/*
+	Vertex vertices[] = { Vertex(glm::vec3(-1, -1, 0)), Vertex(glm::vec3(0, 1, 0)), Vertex(glm::vec3(1, -1, 0)) }; //array of vertices defined by their positions
+	*/
 
 	//Red Triangle Draw
 	/*
