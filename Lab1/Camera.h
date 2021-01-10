@@ -18,6 +18,17 @@ public:
 		this->projection = glm::perspective(fov, aspect, nearClip, farClip);
 	}
 
+	void moveCamera(const glm::vec3& newPos)
+	{
+		this->pos = newPos;
+	}
+
+	void rotateCamera(const glm::vec3& newRot)
+	{
+		this->forward = newRot;
+	}
+
+
 	//method that creates a projection matrix
 	inline glm::mat4 GetViewProjection() const
 	{

@@ -34,5 +34,7 @@ private:
 	Shader shader;
 
 	float counter;
+	float moveCameraZ;
+	float rotateCameraX;
 };
 

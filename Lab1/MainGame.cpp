@@ -1,6 +1,7 @@
 #include "MainGame.h"
 #include <iostream>
 #include <string>
+#include <Windows.h>
 
 unsigned int indices[] = { 0, 1, 2 };
 Transform transform;
@@ -29,7 +30,10 @@ void MainGame::initSystems()
 	texture.init("..\\res\\bricks.jpg"); //
 	shader.init("..\\res\\shader"); //new shader
 
-	myCamera.initCamera(glm::vec3(0, 0, -20), 70.0f, (float)_gameDisplay.GetWidth() / _gameDisplay.GetHeight(), 0.01f, 1000.0f); //initialise camera
+	rotateCameraX = 0;
+	moveCameraZ = -20;
+
+	myCamera.initCamera(glm::vec3(0, 0, moveCameraZ), 70.0f, (float)_gameDisplay.GetWidth() / _gameDisplay.GetHeight(), 0.01f, 1000.0f); //initialise camera
 }
 
 void MainGame::gameLoop()
@@ -59,6 +63,43 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
+	//Keyboard Inputs for moving and rotating the camera
+	if (GetAsyncKeyState(VK_DOWN))
+	{
+		if (moveCameraZ > -30)
+		{
+			moveCameraZ -= 0.1f;
+		}
+	}
+
+	if (GetAsyncKeyState(VK_UP))
+	{
+		if (moveCameraZ < -10)
+		{
+			moveCameraZ += 0.1f;
+		}
+	}
+
+	if (GetAsyncKeyState(VK_RIGHT))
+	{
+		if (rotateCameraX > -0.5f)
+		{
+			rotateCameraX -= 0.01f;
+		}
+	}
+
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		if (rotateCameraX < 0.5f)
+		{
+			rotateCameraX += 0.01f;
+		}
+	}
+
+	//camera methods
+	myCamera.moveCamera(glm::vec3(0.0f, 0.0f, moveCameraZ));
+	myCamera.rotateCamera(glm::vec3(rotateCameraX, 0.0f, 1.0f));
+
 	//previous clear display
 	//_gameDisplay.ClearDisplay(); //method that clears the display
 
