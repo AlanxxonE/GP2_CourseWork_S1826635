@@ -10,6 +10,8 @@ MainGame::MainGame()
 {
 	_gameState = GameState::PLAY; //sets the gamestate to PLAY
 	Display* _gameDisplay = new Display(); //new display
+	Mesh* mesh1();
+	Mesh* mesh2();
 }
 
 MainGame::~MainGame()
@@ -27,8 +29,16 @@ void MainGame::initSystems()
 	_gameDisplay.initDisplay(); //initialise the display
 
 	mesh1.loadModel("..\\res\\monkey3.obj"); //load 3D model from file
+	mesh2.loadModel("..\\res\\monkey3.obj");
+
+	//set mesh radius when initialaising systems to avoid updating in every loop round
+	mesh1.SetSphereRad(0.65f);
+	mesh2.SetSphereRad(0.65f);
+
 	texture.init("..\\res\\bricks.jpg"); //
 	shader.init("..\\res\\shader"); //new shader
+
+	counter = 0;
 
 	rotateCameraX = 0;
 	moveCameraZ = -20;
@@ -42,6 +52,8 @@ void MainGame::gameLoop()
 	{
 		processInput();
 		drawGame();
+		CheckCollision(mesh1.GetSpherePos(), mesh1.GetSphereRad(), mesh2.GetSpherePos(), mesh2.GetSphereRad());
+		CameraMovement();
 	}
 }
 
@@ -63,56 +75,28 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
-	//Keyboard Inputs for moving and rotating the camera
-	if (GetAsyncKeyState(VK_DOWN))
-	{
-		if (moveCameraZ > -30)
-		{
-			moveCameraZ -= 0.1f;
-		}
-	}
-
-	if (GetAsyncKeyState(VK_UP))
-	{
-		if (moveCameraZ < -10)
-		{
-			moveCameraZ += 0.1f;
-		}
-	}
-
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		if (rotateCameraX > -0.5f)
-		{
-			rotateCameraX -= 0.01f;
-		}
-	}
-
-	if (GetAsyncKeyState(VK_LEFT))
-	{
-		if (rotateCameraX < 0.5f)
-		{
-			rotateCameraX += 0.01f;
-		}
-	}
-
-	//camera methods
-	myCamera.moveCamera(glm::vec3(0.0f, 0.0f, moveCameraZ));
-	myCamera.rotateCamera(glm::vec3(rotateCameraX, 0.0f, 1.0f));
-
 	//previous clear display
 	//_gameDisplay.ClearDisplay(); //method that clears the display
 
 	_gameDisplay.ClearDisplay(0.0f, 0.0f, 0.0f, 1.0f);
 
 	//transform.SetPos(glm::vec3(sinf(counter), 0.0, sinf(counter) * 10));
-	transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
+	//transform.SetRot(glm::vec3(0.0, counter * 5, 0.0));
 	//transform.SetScale(glm::vec3(1.0, 1.0, 1.0));
 
 	shader.Bind();
 	shader.Update(transform, myCamera);
 	texture.Bind(0);
 	mesh1.Draw();
+	mesh1.SetSpherePos(*transform.GetPos());
+
+	//transform.SetRot(glm::vec3(0.0, -counter * 5, 0.0));
+
+	shader.Bind();
+	shader.Update(transform, myCamera);
+	texture.Bind(0);
+	mesh2.Draw();
+	mesh2.SetSpherePos(*transform.GetPos());
 
 	counter = counter + 0.001f;
 
@@ -169,4 +153,59 @@ void MainGame::drawGame()
 	*/
 
 	_gameDisplay.swapBuffer(); //method that swap the buffers
+}
+
+void MainGame::CameraMovement()
+{
+	//Keyboard Inputs for moving and rotating the camera
+	if (GetAsyncKeyState(VK_DOWN))
+	{
+		if (moveCameraZ > -30)
+		{
+			moveCameraZ -= 0.1f;
+		}
+	}
+
+	if (GetAsyncKeyState(VK_UP))
+	{
+		if (moveCameraZ < -10)
+		{
+			moveCameraZ += 0.1f;
+		}
+	}
+
+	if (GetAsyncKeyState(VK_RIGHT))
+	{
+		if (rotateCameraX > -0.5f)
+		{
+			rotateCameraX -= 0.01f;
+		}
+	}
+
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		if (rotateCameraX < 0.5f)
+		{
+			rotateCameraX += 0.01f;
+		}
+	}
+
+	//camera methods
+	myCamera.moveCamera(glm::vec3(0.0f, 0.0f, moveCameraZ));
+	myCamera.rotateCamera(glm::vec3(rotateCameraX, 0.0f, 1.0f));
+}
+
+bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, float m2Rad)
+{
+	float distance = ((m2Pos.x - m1Pos.x) * (m2Pos.x - m1Pos.x) + (m2Pos.y - m1Pos.y) * (m2Pos.y - m1Pos.y) + (m2Pos.z - m1Pos.z) * (m2Pos.z - m1Pos.z));
+
+	if (distance * distance < (m1Rad + m2Rad))
+	{
+		cout << "COLLISION DETECTED";
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

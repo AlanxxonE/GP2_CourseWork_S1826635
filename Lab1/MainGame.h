@@ -25,10 +25,14 @@ private:
 	void processInput();
 	void gameLoop();
 	void drawGame();
+	void CameraMovement();
+
+	bool CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, float m2Rad);
 
 	Display _gameDisplay;
 	GameState _gameState;
 	Mesh mesh1;
+	Mesh mesh2;
 	Camera myCamera;
 	Texture texture;
 	Shader shader;

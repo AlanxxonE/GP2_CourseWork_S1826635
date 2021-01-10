@@ -90,6 +90,8 @@ void Mesh::loadModel(const std::string& filename)
 {
 	IndexedModel model = OBJModel(filename).ToIndexedModel(); //load a model from file
 	initModel(model); //initialise the new model
+
+	Sphere SphereModel(); //initialise sphere mesh struct
 }
 
 void Mesh::initModel(const IndexedModel& model)
@@ -121,4 +123,10 @@ void Mesh::initModel(const IndexedModel& model)
 
 	glBindVertexArray(0); //unbind the VAO
 
+}
+
+void Mesh::UpdateSphereData(glm::vec3 pos, float radius)
+{
+	meshSphere.SetPos(pos);
+	meshSphere.SetRad(radius);
 }
