@@ -26,19 +26,22 @@ private:
 	void gameLoop();
 	void drawGame();
 	void CameraMovement();
+	void MeshMovement();
+	void TreeMovement();
 
 	bool CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, float m2Rad);
 
 	Display _gameDisplay;
 	GameState _gameState;
-	Mesh mesh1;
-	Mesh mesh2;
+	Mesh wpMesh, bgMesh, trMesh;
 	Camera myCamera;
-	Texture texture;
+	Texture woodpeckerTexture, backgroundTexture, treeTexture;
 	Shader shader;
 
-	float counter;
+	int treePos;
+	float treeSpeed;
 	float moveCameraZ;
 	float rotateCameraX;
+	float moveMeshX;
 };
 

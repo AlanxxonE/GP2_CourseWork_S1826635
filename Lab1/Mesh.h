@@ -116,7 +116,6 @@ private:
 	GLuint vertexArrayObject; //create array object
 	GLuint vertexArrayBuffers[NUM_BUFFERS]; // create array of buffers
 	unsigned int drawCount; //how much of the vertexArrayObject needs to be drawn
-
 };
 
 
