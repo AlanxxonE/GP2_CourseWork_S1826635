@@ -4,7 +4,7 @@
 #include <Windows.h>
 
 unsigned int indices[] = { 0, 1, 2 };
-Transform woodpeckerTransform, treeTransform, backgroundTransformOne, backgroundTransformTwo;
+Transform woodpeckerTransform, treeTransform, backgroundTransformOne, backgroundTransformTwo, fallTransform, fallTransformOne, fallTransformTwo;
 
 MainGame::MainGame()
 {
@@ -41,6 +41,8 @@ void MainGame::initSystems()
 	woodpeckerTexture.init("..\\res\\feather.jpg"); //
 	backgroundTexture.init("..\\res\\leaf.jpg");
 	treeTexture.init("..\\res\\bark.jpg");
+	fallTexture.init("..\\res\\fall.jpg");
+
 	shader.init("..\\res\\shader"); //new shader
 
 	backgroundTransformOne.SetPos(glm::vec3(100, 0, 200));
@@ -51,11 +53,20 @@ void MainGame::initSystems()
 	backgroundTransformTwo.SetRot(glm::vec3(0, 1.58f, 0));
 	backgroundTransformTwo.SetScale(glm::vec3(2, 3, 2));
 
+	fallTransform.SetRot(glm::vec3(0, 1.58f, 1.58f));
+	fallTransform.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+	fallTransformOne.SetRot(glm::vec3(0, 1.58f, 1.58f));
+	fallTransformOne.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+	fallTransformTwo.SetRot(glm::vec3(0, 1.58f, 1.58f));
+	fallTransformTwo.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+
 	woodpeckerTransform.SetRot(glm::vec3(0, 1.58f, 0));
 
 	treePos = 0;
 
 	treeSpeed = 200;
+
+	fallSpeed = 40;
 
 	treeTransform.SetPos(glm::vec3(0, 0, treeSpeed));
 
@@ -67,12 +78,14 @@ void MainGame::initSystems()
 
 void MainGame::gameLoop()
 {
+	GameInstructions();
+
 	while (_gameState != GameState::EXIT) //when gamestate changes to exit the while is executed no more
 	{
 		processInput();
 		drawGame();
 		CheckCollision(wpMesh.GetSpherePos(), wpMesh.GetSphereRad(), trMesh.GetSpherePos(), trMesh.GetSphereRad());
-		//CameraMovement();
+		CameraMovement();
 		MeshMovement();
 		TreeMovement();
 	}
@@ -120,6 +133,19 @@ void MainGame::drawGame()
 	shader.Update(backgroundTransformTwo, myCamera);
 
 	bgMesh.Draw();
+
+	shader.Update(fallTransform, myCamera);
+	fallTexture.Bind(0);
+
+	wpMesh.Draw();
+
+	shader.Update(fallTransformOne, myCamera);
+
+	wpMesh.Draw();
+
+	shader.Update(fallTransformTwo, myCamera);
+
+	wpMesh.Draw();
 
 	//previous clear display
 	//_gameDisplay.ClearDisplay(); //method that clears the display
@@ -196,27 +222,27 @@ void MainGame::CameraMovement()
 
 	if (GetAsyncKeyState(VK_UP))
 	{
-		if (moveCameraZ < -10)
+		if (moveCameraZ < -25)
 		{
 			moveCameraZ += 0.1f;
 		}
 	}
 
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		if (rotateCameraX > -0.5f)
-		{
-			rotateCameraX -= 0.01f;
-		}
-	}
+	//if (GetAsyncKeyState(VK_RIGHT))
+	//{
+	//	if (rotateCameraX > -0.5f)
+	//	{
+	//		rotateCameraX -= 0.01f;
+	//	}
+	//}
 
-	if (GetAsyncKeyState(VK_LEFT))
-	{
-		if (rotateCameraX < 0.5f)
-		{
-			rotateCameraX += 0.01f;
-		}
-	}
+	//if (GetAsyncKeyState(VK_LEFT))
+	//{
+	//	if (rotateCameraX < 0.5f)
+	//	{
+	//		rotateCameraX += 0.01f;
+	//	}
+	//}
 
 	//camera methods
 	myCamera.moveCamera(glm::vec3(0.0f, 0.0f, moveCameraZ));
@@ -290,6 +316,34 @@ void MainGame::TreeMovement()
 
 		treeSpeed = 200;
 	}
+
+	if (fallSpeed > -12)
+	{
+		fallSpeed -= 0.01f;
+	}
+	else
+	{
+		fallSpeed = 40;
+	}
+
+	fallTransform.SetPos(glm::vec3(-fallSpeed, fallSpeed, 1));
+
+	fallTransformOne.SetPos(glm::vec3(-20 - (fallSpeed), 3 * fallSpeed, 1));
+
+	fallTransformTwo.SetPos(glm::vec3(+30 - fallSpeed / 3, -5 +(fallSpeed), 1));
+}
+
+void MainGame::GameInstructions()
+{
+	cout << "\n" << "WELCOME TO 'FOREST FLIGHT'" << "\n";
+
+	cout << "\n" << "Ready to start flying?!" << "\n";
+
+	cout << "\n" << "A & D to fly Left and Right respectively!" << "\n";
+
+	cout << "\n" << "UP & DOWN arrow keys to focus the Woodpecker eyesight!" << "\n";
+
+	cout << "\n" << "Avoid hitting the trees or the Woodpecker will faint!" << "\n";
 }
 
 bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, float m2Rad)
@@ -298,11 +352,11 @@ bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, flo
 
 	if (distance * distance < (m1Rad + m2Rad))
 	{
-		cout << "COLLISION DETECTED";
+		cout << "\n" << "COLLISION DETECTED" << "\n";
 
 		_gameState = GameState::EXIT;
 
-		cout << "\n" << "GAME OVER!";
+		cout << "\n" << "GAME OVER!" << "\n";
 
 		return true;
 	}

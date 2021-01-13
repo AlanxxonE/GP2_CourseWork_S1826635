@@ -29,17 +29,19 @@ private:
 	void MeshMovement();
 	void TreeMovement();
 
+	void GameInstructions();
+
 	bool CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, float m2Rad);
 
 	Display _gameDisplay;
 	GameState _gameState;
 	Mesh wpMesh, bgMesh, trMesh;
 	Camera myCamera;
-	Texture woodpeckerTexture, backgroundTexture, treeTexture;
+	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
 	Shader shader;
 
 	int treePos;
-	float treeSpeed;
+	float treeSpeed, fallSpeed;
 	float moveCameraZ;
 	float rotateCameraX;
 	float moveMeshX;
