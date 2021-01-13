@@ -34,6 +34,8 @@ void MainGame::initSystems()
 
 	trMesh.loadModel("..\\res\\Tree.obj");
 
+	lfMesh.loadModel("..\\res\\Leaf.obj");
+
 	//set mesh radius when initialaising systems to avoid updating in every loop round
 	wpMesh.SetSphereRad(100);
 	trMesh.SetSphereRad(100);
@@ -53,14 +55,16 @@ void MainGame::initSystems()
 	backgroundTransformTwo.SetRot(glm::vec3(0, 1.58f, 0));
 	backgroundTransformTwo.SetScale(glm::vec3(2, 3, 2));
 
-	fallTransform.SetRot(glm::vec3(0, 1.58f, 1.58f));
-	fallTransform.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
-	fallTransformOne.SetRot(glm::vec3(0, 1.58f, 1.58f));
-	fallTransformOne.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
-	fallTransformTwo.SetRot(glm::vec3(0, 1.58f, 1.58f));
-	fallTransformTwo.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+	fallTransform.SetRot(glm::vec3(1, 1.58f, 0));
+	fallTransform.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+	fallTransformOne.SetRot(glm::vec3(1, 1.58f, 0));
+	fallTransformOne.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+	fallTransformTwo.SetRot(glm::vec3(1, 1.58f, 0));
+	fallTransformTwo.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-	woodpeckerTransform.SetRot(glm::vec3(0, 1.58f, 0));
+	woodpeckerTransform.SetScale(glm::vec3(20, 20, 20));
+
+	flyScore = 0;
 
 	treePos = 0;
 
@@ -68,7 +72,7 @@ void MainGame::initSystems()
 
 	fallSpeed = 40;
 
-	treeTransform.SetPos(glm::vec3(0, 0, treeSpeed));
+	treeTransform.SetPos(glm::vec3(0, -30, treeSpeed));
 
 	rotateCameraX = 0;
 	moveCameraZ = -40;
@@ -109,6 +113,7 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
+	glFogf(GL_FOG_START, 0);
 
 	_gameDisplay.ClearDisplay(0.2f, 0.8f, 0.5f, 1.0f);
 
@@ -123,7 +128,7 @@ void MainGame::drawGame()
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
-	trMesh.SetSpherePos(*treeTransform.GetPos());
+	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, +30, 0));
 
 	shader.Update(backgroundTransformOne, myCamera);
 	backgroundTexture.Bind(0);
@@ -137,15 +142,15 @@ void MainGame::drawGame()
 	shader.Update(fallTransform, myCamera);
 	fallTexture.Bind(0);
 
-	wpMesh.Draw();
+	lfMesh.Draw();
 
 	shader.Update(fallTransformOne, myCamera);
 
-	wpMesh.Draw();
+	lfMesh.Draw();
 
 	shader.Update(fallTransformTwo, myCamera);
 
-	wpMesh.Draw();
+	lfMesh.Draw();
 
 	//previous clear display
 	//_gameDisplay.ClearDisplay(); //method that clears the display
@@ -274,17 +279,19 @@ void MainGame::MeshMovement()
 
 void MainGame::TreeMovement()
 {
+	flyScore++;
+
 	if (treePos == 0)
 	{
-		treeTransform.SetPos(glm::vec3(10, -10, treeSpeed));
+		treeTransform.SetPos(glm::vec3(10, -40, treeSpeed));
 	}
 	else if (treePos == 1)
 	{
-		treeTransform.SetPos(glm::vec3(0, -10, treeSpeed));
+		treeTransform.SetPos(glm::vec3(0, -40, treeSpeed));
 	}
 	else
 	{
-		treeTransform.SetPos(glm::vec3(-10, -10, treeSpeed));
+		treeTransform.SetPos(glm::vec3(-10, -40, treeSpeed));
 	}
 
 	if (treeSpeed > -50)
@@ -317,7 +324,7 @@ void MainGame::TreeMovement()
 		treeSpeed = 200;
 	}
 
-	if (fallSpeed > -12)
+	if (fallSpeed > -20)
 	{
 		fallSpeed -= 0.01f;
 	}
@@ -326,11 +333,14 @@ void MainGame::TreeMovement()
 		fallSpeed = 40;
 	}
 
-	fallTransform.SetPos(glm::vec3(-fallSpeed, fallSpeed, 1));
+	fallTransform.SetRot(glm::vec3(fallSpeed / 5, fallSpeed / 5, 0));
+	fallTransform.SetPos(glm::vec3(-fallSpeed, fallSpeed, 5));
 
-	fallTransformOne.SetPos(glm::vec3(-20 - (fallSpeed), 3 * fallSpeed, 1));
+	fallTransformOne.SetRot(glm::vec3(fallSpeed / 3, 1.58f, 0));
+	fallTransformOne.SetPos(glm::vec3(-20 - (fallSpeed), 3 * fallSpeed, 5));
 
-	fallTransformTwo.SetPos(glm::vec3(+30 - fallSpeed / 3, -5 +(fallSpeed), 1));
+	fallTransformTwo.SetRot(glm::vec3(-fallSpeed, 1.58f, -fallSpeed));
+	fallTransformTwo.SetPos(glm::vec3(+30 - fallSpeed / 3, -5 +(fallSpeed), 5));
 }
 
 void MainGame::GameInstructions()
@@ -357,6 +367,8 @@ bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, flo
 		_gameState = GameState::EXIT;
 
 		cout << "\n" << "GAME OVER!" << "\n";
+
+		cout << "\n" << "Your fly Score was:  " << flyScore << "\n";
 
 		return true;
 	}

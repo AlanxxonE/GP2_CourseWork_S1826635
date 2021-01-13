@@ -35,13 +35,13 @@ private:
 
 	Display _gameDisplay;
 	GameState _gameState;
-	Mesh wpMesh, bgMesh, trMesh;
+	Mesh wpMesh, bgMesh, trMesh, lfMesh;
 	Camera myCamera;
 	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
 	Shader shader;
 
 	int treePos;
-	float treeSpeed, fallSpeed;
+	float treeSpeed, fallSpeed, flyScore;
 	float moveCameraZ;
 	float rotateCameraX;
 	float moveMeshX;
