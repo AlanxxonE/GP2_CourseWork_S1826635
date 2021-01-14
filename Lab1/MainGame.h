@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "transform.h"
 #include "Camera.h"
+#include "Audio.h"
 
 enum class GameState{PLAY, EXIT};
 
@@ -33,17 +34,21 @@ private:
 
 	bool CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, float m2Rad);
 
+	void playAudio(unsigned int Source, glm::vec3 pos);
+
 	Display _gameDisplay;
 	GameState _gameState;
 	Mesh wpMesh, bgMesh, trMesh, lfMesh;
 	Camera myCamera;
 	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
 	Shader shader;
+	Audio audioDevice;
 
 	int treePos;
 	float treeSpeed, fallSpeed, flyScore;
 	float moveCameraZ;
 	float rotateCameraX;
 	float moveMeshX;
+	unsigned int bgMusic;
 };
 

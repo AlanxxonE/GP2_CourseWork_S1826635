@@ -12,6 +12,7 @@ MainGame::MainGame()
 	Display* _gameDisplay = new Display(); //new display
 	Mesh* mesh1();
 	Mesh* mesh2();
+	Audio* audioDevice();
 }
 
 MainGame::~MainGame()
@@ -27,6 +28,8 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay(); //initialise the display
+
+	bgMusic = audioDevice.loadSound("..\\res\\Forest.wav");
 
 	wpMesh.loadModel("..\\res\\Woodpecker.obj"); //load 3D model from file
 
@@ -92,6 +95,7 @@ void MainGame::gameLoop()
 		CameraMovement();
 		MeshMovement();
 		TreeMovement();
+		playAudio(bgMusic, glm::vec3(0.0f, 0.0f, 0.0f));
 	}
 }
 
@@ -256,7 +260,7 @@ void MainGame::CameraMovement()
 
 void MainGame::MeshMovement()
 {
-	//Keyboard Inputs for moving and rotating the mesh model
+	//Keyboard Inputs for moving the mesh model
 	if (GetAsyncKeyState('D'))
 	{
 		if (moveMeshX > -10.0f)
@@ -375,5 +379,25 @@ bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, flo
 	else
 	{
 		return false;
+	}
+}
+
+void MainGame::playAudio(unsigned int Source, glm::vec3 pos)
+{
+	ALint state;
+
+	alGetSourcei(Source, AL_SOURCE_STATE, &state);
+
+	/*
+	Possible values of state
+	AL_INITIAL
+	AL_STOPPED
+	AL_PLAYING
+	AL_PAUSED
+	*/
+
+	if (AL_PLAYING != state)
+	{
+		audioDevice.playSound(Source, pos);
 	}
 }
