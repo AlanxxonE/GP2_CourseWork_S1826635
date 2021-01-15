@@ -18,11 +18,11 @@ public:
 	void Update(const Transform& transform); //update shader class to run transform math
 	void Update(const Transform& transform, const Camera& camera); //update shader class with camera functionality
 
-	std::string LoadShader(const std::string& fileName);
+	std::string LoadShader(const std::string& fileName); //load shader from file
 
-	void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
+	void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage); //check shader implementation errors
 
-	GLuint CreateShader(const std::string& text, unsigned int type);
+	GLuint CreateShader(const std::string& text, unsigned int type); //methods that instantiates the shader
 
 	~Shader();
 

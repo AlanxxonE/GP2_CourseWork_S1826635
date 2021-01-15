@@ -10,9 +10,6 @@ MainGame::MainGame()
 {
 	_gameState = GameState::PLAY; //sets the gamestate to PLAY
 	Display* _gameDisplay = new Display(); //new display
-	Mesh* mesh1();
-	Mesh* mesh2();
-	Audio* audioDevice();
 }
 
 MainGame::~MainGame()
@@ -29,35 +26,56 @@ void MainGame::initSystems()
 {
 	_gameDisplay.initDisplay(); //initialise the display
 
-	bgMusic = audioDevice.loadSound("..\\res\\Forest.wav");
+	bgMusic = audioDevice.loadSound("..\\res\\Forest.wav"); //loads in the background music, music loaded: Forest Ambience
 
-	wpMesh.loadModel("..\\res\\Woodpecker.obj"); //load 3D model from file
+	wpMesh.loadModel("..\\res\\Woodpecker.obj"); //load 3D model from file, model loaded: Bird Woodpecker
 
-	bgMesh.loadModel("..\\res\\Background.obj");
+	bgMesh.loadModel("..\\res\\Background.obj"); //load 3D model from file, model loaded: Background Poster
 
-	trMesh.loadModel("..\\res\\Tree.obj");
+	trMesh.loadModel("..\\res\\Tree.obj"); //load 3D model from file, model loaded: Leafless Maple Tree
 
-	lfMesh.loadModel("..\\res\\Leaf.obj");
+	lfMesh.loadModel("..\\res\\Leaf.obj"); //load 3D model from file, model loaded: Maple Leaf
 
 	//set mesh radius when initialaising systems to avoid updating in every loop round
 	wpMesh.SetSphereRad(100);
 	trMesh.SetSphereRad(100);
 
-	woodpeckerTexture.init("..\\res\\feather.jpg"); //
-	backgroundTexture.init("..\\res\\leaf.jpg");
-	treeTexture.init("..\\res\\bark.jpg");
-	fallTexture.init("..\\res\\fall.jpg");
+	woodpeckerTexture.init("..\\res\\feather.jpg"); //initialise a texture loading it from folder, texture loaded: Black Feathers
+	backgroundTexture.init("..\\res\\leaf.jpg"); //initialise a texture loading it from folder, texture loaded: Background Forest Leaves
+	treeTexture.init("..\\res\\bark.jpg"); //initialise a texture loading it from folder, texture loaded: Maple Tree Bark
+	fallTexture.init("..\\res\\fall.jpg"); //initialise a texture loading it from folder, texture loaded: Red Maple Falling Leaf
 
-	shader.init("..\\res\\shader"); //new shader
+	shader.init("..\\res\\shader"); //initialise new shader
 
+	flyScore = 0; //assign the starting fly score value
+
+	treePos = 0; //assign the starting tree mesh position
+
+	treeSpeed = 200; //assign the initial tree speed mesh value
+
+	fallSpeed = 40; //assign the initial falling leaf mesh value
+
+	initTransforms(); //initialise all the starting transform values of the meshes
+
+	rotateCameraX = 0; //assign the initial value for rotating the camera in the X axis of the forward vector of the projection
+	moveCameraZ = -40; //assign the starting value of the camera vector position in the Z axis
+
+	myCamera.initCamera(glm::vec3(0, 0, moveCameraZ), 70.0f, (float)_gameDisplay.GetWidth() / _gameDisplay.GetHeight(), 0.01f, 1000.0f); //initialise camera
+}
+
+void MainGame::initTransforms()
+{
+	//set the position, rotation and scale of the first background transform
 	backgroundTransformOne.SetPos(glm::vec3(100, 0, 200));
 	backgroundTransformOne.SetRot(glm::vec3(0, 1.58f, 0));
 	backgroundTransformOne.SetScale(glm::vec3(2, 3, 2));
-
+	
+	//set the position, rotation and scale of the second background transform
 	backgroundTransformTwo.SetPos(glm::vec3(-100, 0, 200));
 	backgroundTransformTwo.SetRot(glm::vec3(0, 1.58f, 0));
 	backgroundTransformTwo.SetScale(glm::vec3(2, 3, 2));
 
+	//set the rotation and scale of the falling leaves transforms
 	fallTransform.SetRot(glm::vec3(1, 1.58f, 0));
 	fallTransform.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 	fallTransformOne.SetRot(glm::vec3(1, 1.58f, 0));
@@ -65,22 +83,11 @@ void MainGame::initSystems()
 	fallTransformTwo.SetRot(glm::vec3(1, 1.58f, 0));
 	fallTransformTwo.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 
+	//set the scale of the woodpecker transform
 	woodpeckerTransform.SetScale(glm::vec3(20, 20, 20));
 
-	flyScore = 0;
-
-	treePos = 0;
-
-	treeSpeed = 200;
-
-	fallSpeed = 40;
-
+	//set the position of the tree transform
 	treeTransform.SetPos(glm::vec3(0, -30, treeSpeed));
-
-	rotateCameraX = 0;
-	moveCameraZ = -40;
-
-	myCamera.initCamera(glm::vec3(0, 0, moveCameraZ), 70.0f, (float)_gameDisplay.GetWidth() / _gameDisplay.GetHeight(), 0.01f, 1000.0f); //initialise camera
 }
 
 void MainGame::gameLoop()
@@ -89,13 +96,19 @@ void MainGame::gameLoop()
 
 	while (_gameState != GameState::EXIT) //when gamestate changes to exit the while is executed no more
 	{
-		processInput();
-		drawGame();
+		processInput(); //check if the game is still running and process events
+		drawGame(); //method responsible for drawing textures and meshes inside the display window
+
+		//method that constantly check if a collision happened between two specific meshes
 		CheckCollision(wpMesh.GetSpherePos(), wpMesh.GetSphereRad(), trMesh.GetSpherePos(), trMesh.GetSphereRad());
-		CameraMovement();
-		MeshMovement();
-		TreeMovement();
-		playAudio(bgMusic, glm::vec3(0.0f, 0.0f, 0.0f));
+
+		CameraMovement(); //method that handles the movements of the camera based on user inputs
+		MeshMovement(); //method that handles the movements of the woodpecker mesh based on user inputs
+		TreeMovement(); //method that handles the movements of the tree mesh autonomously
+
+		//method that reproduce an audio track in a loop at a specific position
+		//while also checking if the audio source is already playing, avoiding audio stack or unwanted replays
+		playAudio(bgMusic, glm::vec3(0.0f, 0.0f, 0.0f)); 
 	}
 }
 
@@ -117,10 +130,22 @@ void MainGame::processInput()
 
 void MainGame::drawGame()
 {
-	glFogf(GL_FOG_START, 0);
+	//Enables openGL fog function to enhance the atmosphere
+	/*
+	glEnable(GL_FOG);
+	float fogColor[4] = { 0.8, 0.8, 0.8, 1 };
+	glFogi(GL_FOG_MODE, GL_LINEAR);
+	glFogfv(GL_FOG_COLOR, fogColor);
+	glFogf(GL_FOG_DENSITY, 0.8);
+	glHint(GL_FOG_HINT, GL_NICEST);
+	glFogf(GL_FOG_START, -50);
+	glFogf(GL_FOG_END, 0);
+	*/
 
-	_gameDisplay.ClearDisplay(0.2f, 0.8f, 0.5f, 1.0f);
+	_gameDisplay.ClearDisplay(0.2f, 0.8f, 0.5f, 1.0f); //clears the display while also assigning a light green color
 
+	//binds the shader, updates it with the woodpecker transform information
+	//binds the woodpecker texture, draws the bird mesh and sets the collision sphere based on the transform position
 	shader.Bind();
 	shader.Update(woodpeckerTransform, myCamera);
 	woodpeckerTexture.Bind(0);
@@ -128,12 +153,16 @@ void MainGame::drawGame()
 	wpMesh.Draw();
 	wpMesh.SetSpherePos(*woodpeckerTransform.GetPos());
 
+	//updates the shader with the tree transform information
+	//binds the tree texture, draws the maple tree mesh and sets the collision sphere based on the transform position plus an offset from the ground
 	shader.Update(treeTransform, myCamera);
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
 	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, +30, 0));
 
+	//updates the shader with the first and second background transforms information
+	//binds the background leaves texture, draws the two poster meshes
 	shader.Update(backgroundTransformOne, myCamera);
 	backgroundTexture.Bind(0);
 
@@ -143,6 +172,8 @@ void MainGame::drawGame()
 
 	bgMesh.Draw();
 
+	//updates the shader with the fallen leaves transforms information
+	//binds the falling leaf texture, draws the three maple leaf meshes
 	shader.Update(fallTransform, myCamera);
 	fallTexture.Bind(0);
 
@@ -225,7 +256,7 @@ void MainGame::CameraMovement()
 	{
 		if (moveCameraZ > -50)
 		{
-			moveCameraZ -= 0.1f;
+			moveCameraZ -= 0.1f; //down arrow key for moving the camera backwards
 		}
 	}
 
@@ -233,7 +264,7 @@ void MainGame::CameraMovement()
 	{
 		if (moveCameraZ < -25)
 		{
-			moveCameraZ += 0.1f;
+			moveCameraZ += 0.1f; //up arrow key for moving the camera forwards
 		}
 	}
 
@@ -241,7 +272,7 @@ void MainGame::CameraMovement()
 	//{
 	//	if (rotateCameraX > -0.5f)
 	//	{
-	//		rotateCameraX -= 0.01f;
+	//		rotateCameraX -= 0.01f; //right arrow key to rotate the camera right
 	//	}
 	//}
 
@@ -249,11 +280,11 @@ void MainGame::CameraMovement()
 	//{
 	//	if (rotateCameraX < 0.5f)
 	//	{
-	//		rotateCameraX += 0.01f;
+	//		rotateCameraX += 0.01f; //left arrow key to rotate the camera left
 	//	}
 	//}
 
-	//camera methods
+	//camera methods to update the new position and rotation of the camera
 	myCamera.moveCamera(glm::vec3(0.0f, 0.0f, moveCameraZ));
 	myCamera.rotateCamera(glm::vec3(rotateCameraX, 0.0f, 1.0f));
 }
@@ -265,7 +296,7 @@ void MainGame::MeshMovement()
 	{
 		if (moveMeshX > -10.0f)
 		{
-			moveMeshX -= 0.1f;
+			moveMeshX -= 0.1f; //D letter key to move the woodpecker to the right
 		}
 	}
 
@@ -273,18 +304,19 @@ void MainGame::MeshMovement()
 	{
 		if (moveMeshX < 10.0f)
 		{
-			moveMeshX += 0.1f;
+			moveMeshX += 0.1f; //A letter key to move the woorpecker to the left
 		}
 	}
 
-	//transform methods
+	//transform method to update the new woodpecker mesh position
 	woodpeckerTransform.SetPos(glm::vec3(moveMeshX, -10, 0.0f));
 }
 
 void MainGame::TreeMovement()
 {
-	flyScore++;
+	flyScore++; //assignment that adds a point to the fly score value for every loop survived
 
+	//checks the tree position variable value and assigns a new transform position X value to generate the tree in a different X point in space
 	if (treePos == 0)
 	{
 		treeTransform.SetPos(glm::vec3(10, -40, treeSpeed));
@@ -298,6 +330,8 @@ void MainGame::TreeMovement()
 		treeTransform.SetPos(glm::vec3(-10, -40, treeSpeed));
 	}
 
+	//updates the tree speed value until it goes past the camera position
+	//when that happens the tree position value is changed adn resets the original tree speed value
 	if (treeSpeed > -50)
 	{
 		treeSpeed -= 0.1f;
@@ -328,6 +362,8 @@ void MainGame::TreeMovement()
 		treeSpeed = 200;
 	}
 
+	//updates the fall speed value until it reaches the floor of the forest
+	//the three different transforms for the different leaves are then updated
 	if (fallSpeed > -20)
 	{
 		fallSpeed -= 0.01f;
@@ -349,6 +385,8 @@ void MainGame::TreeMovement()
 
 void MainGame::GameInstructions()
 {
+	//displays on the console log all the intructions to play the game just before the display window is loaded
+
 	cout << "\n" << "WELCOME TO 'FOREST FLIGHT'" << "\n";
 
 	cout << "\n" << "Ready to start flying?!" << "\n";
@@ -364,8 +402,10 @@ bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, flo
 {
 	float distance = ((m2Pos.x - m1Pos.x) * (m2Pos.x - m1Pos.x) + (m2Pos.y - m1Pos.y) * (m2Pos.y - m1Pos.y) + (m2Pos.z - m1Pos.z) * (m2Pos.z - m1Pos.z));
 
-	if (distance * distance < (m1Rad + m2Rad))
+	if (distance * distance < (m1Rad + m2Rad)) //check if the distance of the two mesh sphere colliders collided
 	{
+		//if that is the case, the collision is detected, the game closes by changing the game state to EXIT
+		//the Game Over is dictated and the total fly score is displayed on the console window
 		cout << "\n" << "COLLISION DETECTED" << "\n";
 
 		_gameState = GameState::EXIT;
@@ -378,6 +418,7 @@ bool MainGame::CheckCollision(glm::vec3 m1Pos, float m1Rad, glm::vec3 m2Pos, flo
 	}
 	else
 	{
+		//otherwise no collision is returned
 		return false;
 	}
 }
@@ -398,6 +439,6 @@ void MainGame::playAudio(unsigned int Source, glm::vec3 pos)
 
 	if (AL_PLAYING != state)
 	{
-		audioDevice.playSound(Source, pos);
+		audioDevice.playSound(Source, pos); //plays a specific audio track based on the audio source and the vector position
 	}
 }

@@ -69,6 +69,8 @@ void Mesh::Draw()
 
 void Mesh::init(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices)
 {
+	//initialise a pre-loaded model based on the position of the vertices, tecture coordinates and the normal vectors
+
 	IndexedModel model;
 
 	for (unsigned int i = 0; i < numVertices; i++)
@@ -127,6 +129,6 @@ void Mesh::initModel(const IndexedModel& model)
 
 void Mesh::UpdateSphereData(glm::vec3 pos, float radius)
 {
-	meshSphere.SetPos(pos);
-	meshSphere.SetRad(radius);
+	meshSphere.SetPos(pos); //updates the current position of the mesh collider sphere
+	meshSphere.SetRad(radius); //updates the current radius of the mesh collider sphere
 }

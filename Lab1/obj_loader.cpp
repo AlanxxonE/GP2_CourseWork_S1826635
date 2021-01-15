@@ -18,6 +18,7 @@ OBJModel::OBJModel(const std::string& fileName)
     file.open(fileName.c_str());
 
     std::string line;
+
     if(file.is_open())
     {
         while(file.good())
@@ -34,17 +35,25 @@ OBJModel::OBJModel(const std::string& fileName)
             switch(lineCStr[0])
             {
                 case 'v':
+
                     if(lineCStr[1] == 't')
                         this->uvs.push_back(ParseOBJVec2(line));
+
                     else if(lineCStr[1] == 'n')
                         this->normals.push_back(ParseOBJVec3(line));
+
                     else if(lineCStr[1] == ' ' || lineCStr[1] == '\t')
                         this->vertices.push_back(ParseOBJVec3(line));
+
                 break;
+
                 case 'f':
                     CreateOBJFace(line);
+
                 break;
-                default: break;
+
+                default: 
+                    break;
             };
         }
     }
@@ -103,11 +112,13 @@ IndexedModel OBJModel::ToIndexedModel()
         
         if(hasUVs)
             currentTexCoord = uvs[currentIndex->uvIndex];
+
         else
             currentTexCoord = glm::vec2(0,0);
             
         if(hasNormals)
             currentNormal = normals[currentIndex->normalIndex];
+
         else
             currentNormal = glm::vec3(0,0,0);
         
@@ -116,6 +127,7 @@ IndexedModel OBJModel::ToIndexedModel()
         
         //Create model to properly generate normals on
         std::map<OBJIndex, unsigned int>::iterator it = normalModelIndexMap.find(*currentIndex);
+
         if(it == normalModelIndexMap.end())
         {
             normalModelIndex = normalModel.positions.size();
@@ -195,6 +207,7 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
                     
                 if(possibleIndex->vertexIndex != currentIndex->vertexIndex)
                     break;
+
                 else if((!hasUVs || possibleIndex->uvIndex == currentIndex->uvIndex) 
                     && (!hasNormals || possibleIndex->normalIndex == currentIndex->normalIndex))
                 {
@@ -204,11 +217,13 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
                     
                     if(hasUVs)
                         currentTexCoord = uvs[currentIndex->uvIndex];
+
                     else
                         currentTexCoord = glm::vec2(0,0);
                         
                     if(hasNormals)
                         currentNormal = normals[currentIndex->normalIndex];
+
                     else
                         currentNormal = glm::vec3(0,0,0);
                     
@@ -230,6 +245,7 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
         {
             if(testIndex->vertexIndex < currentIndex->vertexIndex)
                 start = current;
+
             else
                 end = current;
         }
@@ -302,6 +318,7 @@ glm::vec3 OBJModel::ParseOBJVec3(const std::string& line)
     {
         if(tokenString[vertIndexStart] != ' ')
             break;
+
         vertIndexStart++;
     }
     
@@ -335,6 +352,7 @@ glm::vec2 OBJModel::ParseOBJVec2(const std::string& line)
     {
         if(tokenString[vertIndexStart] != ' ')
             break;
+
         vertIndexStart++;
     }
     

@@ -79,10 +79,10 @@ void Display::ClearDisplay(float r, float g, float b, float a)
 
 float Display::GetWidth()
 {
-	return _screenWidth;
+	return _screenWidth; //returns the width of the screen
 }
 
 float Display::GetHeight()
 {
-	return _screenHeight;
+	return _screenHeight; //returns the height of the screen
 }

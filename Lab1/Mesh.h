@@ -4,6 +4,7 @@
 #include <string>
 #include "obj_loader.h"
 
+//the vertex struct of the mesh class header
 struct Vertex
 {
 public:
@@ -22,9 +23,10 @@ protected:
 private:
 	glm::vec3 pos;
 	glm::vec2 texCoord; //variable that stores the position on the texture mapped to the vertex
-	glm::vec3 normal;
+	glm::vec3 normal; //variable that holds the normal vector information
 };
 
+//the sphere struct of the mesh class header
 struct Sphere
 {
 public:
@@ -37,7 +39,7 @@ public:
 		this->radius = radius;
 	}
 
-	glm::vec3 GetPos()
+	glm::vec3 GetPos() //getters
 	{ 
 		return pos; 
 	}
@@ -47,7 +49,7 @@ public:
 		return radius; 
 	}
 
-	void SetPos(glm::vec3 pos)
+	void SetPos(glm::vec3 pos) //setters
 	{
 		this->pos = pos;
 	}
@@ -79,7 +81,7 @@ public:
 	void loadModel(const std::string& filename); //load 3d object from file
 	void initModel(const IndexedModel& model); //draw the loaded model based on vertices sequentially based on order
 
-	void UpdateSphereData(glm::vec3 pos, float radius);
+	void UpdateSphereData(glm::vec3 pos, float radius); //method that updates the position and the radius of the collision mesh sphere
 
 	glm::vec3 GetSpherePos() 
 	{ 
@@ -91,6 +93,7 @@ public:
 		return meshSphere.GetRad(); 
 	}
 
+	//improved methods for the update sphere data function so it's done when the system is initialised rather that within the loop
 	//methods that sets the position and radius of the initialised 3D model sphere collider
 	void SetSpherePos(glm::vec3 pos)
 	{

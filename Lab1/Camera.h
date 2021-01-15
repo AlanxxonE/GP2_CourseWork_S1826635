@@ -18,11 +18,13 @@ public:
 		this->projection = glm::perspective(fov, aspect, nearClip, farClip);
 	}
 
+	//method that enables camera movements by assigning a new position to the current one
 	void moveCamera(const glm::vec3& newPos)
 	{
 		this->pos = newPos;
 	}
 
+	//method that enables camera rotation by assigning a new value to the forward vector the camera is aming at
 	void rotateCamera(const glm::vec3& newRot)
 	{
 		this->forward = newRot;
