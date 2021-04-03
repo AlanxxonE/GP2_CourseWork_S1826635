@@ -10,6 +10,11 @@ MainGame::MainGame()
 {
 	_gameState = GameState::PLAY; //sets the gamestate to PLAY
 	Display* _gameDisplay = new Display(); //new display
+	Shader shader();
+	Shader fog();
+	Shader toon();
+	Shader rim();
+	Shader geo();
 }
 
 MainGame::~MainGame()
@@ -45,7 +50,15 @@ void MainGame::initSystems()
 	treeTexture.init("..\\res\\bark.jpg"); //initialise a texture loading it from folder, texture loaded: Maple Tree Bark
 	fallTexture.init("..\\res\\fall.jpg"); //initialise a texture loading it from folder, texture loaded: Red Maple Falling Leaf
 
-	shader.init("..\\res\\shader"); //initialise new shader
+	shader.init("..\\res\\shader.vert", "..\\res\\shader.frag"); //initialise new shader
+
+	fog.init("..\\res\\shaderFog.vert", "..\\res\\shaderFog.frag"); //initialise fog shader
+
+	toon.init("..\\res\\shaderToon.vert", "..\\res\\shaderToon.frag"); //initialise toon shader
+
+	rim.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag"); //initialise rim shader
+
+	geo.initGeo(); //initialise geo shader
 
 	flyScore = 0; //assign the starting fly score value
 
@@ -84,7 +97,7 @@ void MainGame::initTransforms()
 	fallTransformTwo.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 
 	//set the scale of the woodpecker transform
-	woodpeckerTransform.SetScale(glm::vec3(20, 20, 20));
+	woodpeckerTransform.SetScale(glm::vec3(200, 200, 200));
 
 	//set the position of the tree transform
 	treeTransform.SetPos(glm::vec3(0, -30, treeSpeed));
@@ -97,7 +110,12 @@ void MainGame::gameLoop()
 	while (_gameState != GameState::EXIT) //when gamestate changes to exit the while is executed no more
 	{
 		processInput(); //check if the game is still running and process events
+
 		drawGame(); //method responsible for drawing textures and meshes inside the display window
+
+		SetFogShaderAttributes();
+		SetToonShaderAttributes();
+		SetRimShaderAttributes();
 
 		//method that constantly check if a collision happened between two specific meshes
 		CheckCollision(wpMesh.GetSpherePos(), wpMesh.GetSphereRad(), trMesh.GetSpherePos(), trMesh.GetSphereRad());
@@ -146,8 +164,11 @@ void MainGame::drawGame()
 
 	//binds the shader, updates it with the woodpecker transform information
 	//binds the woodpecker texture, draws the bird mesh and sets the collision sphere based on the transform position
-	shader.Bind();
-	shader.Update(woodpeckerTransform, myCamera);
+	geo.Bind();
+
+	SetGeoShaderAttributes();
+
+	geo.Update(woodpeckerTransform, myCamera);
 	woodpeckerTexture.Bind(0);
 
 	wpMesh.Draw();
@@ -155,6 +176,7 @@ void MainGame::drawGame()
 
 	//updates the shader with the tree transform information
 	//binds the tree texture, draws the maple tree mesh and sets the collision sphere based on the transform position plus an offset from the ground
+	shader.Bind();
 	shader.Update(treeTransform, myCamera);
 	treeTexture.Bind(0);
 
@@ -381,6 +403,48 @@ void MainGame::TreeMovement()
 
 	fallTransformTwo.SetRot(glm::vec3(-fallSpeed, 1.58f, -fallSpeed));
 	fallTransformTwo.SetPos(glm::vec3(+30 - fallSpeed / 3, -5 +(fallSpeed), 5));
+}
+
+void MainGame::SetFogShaderAttributes()
+{
+	//fog.setVec3("lightDir", glm::vec3(0.5, 0.5, 0.5));
+
+	//fog.setMat4("u_vm", myCamera.GetViewProjection());
+	//fog.setMat4("u_pm", myCamera.GetViewProjection());
+
+	fog.setFloat("minDist", treeSpeed - 200);
+	fog.setFloat("maxDist", 200);
+	fog.setVec3("fogColor", glm::vec3(0.2f, 0.8f, 0.5f));
+}
+
+void MainGame::SetToonShaderAttributes()
+{
+	toon.setVec3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
+}
+
+void MainGame::SetRimShaderAttributes()
+{
+	glm::vec3 camDir;
+	camDir = wpMesh.GetSpherePos() - myCamera.GetPos();
+	camDir = glm::normalize(camDir);
+	rim.setMat4("u_pm", myCamera.GetProjection());
+	rim.setMat4("u_vm", myCamera.GetView());
+	rim.setMat4("model", woodpeckerTransform.GetModel());
+	rim.setMat4("view", myCamera.GetView());
+	rim.setVec3("lightDir", glm::vec3(0.5f, 0.5f, 0.5f));
+}
+
+void MainGame::SetGeoShaderAttributes()
+{
+	float randX = ((float)rand() / (RAND_MAX));
+	float randY = ((float)rand() / (RAND_MAX));
+	float randZ = ((float)rand() / (RAND_MAX));
+	// Frag: uniform float randColourX; uniform float randColourY; uniform float randColourZ;
+	geo.setFloat("randColourX", randX);
+	geo.setFloat("randColourY", randY);
+	geo.setFloat("randColourZ", randZ);
+	// Geom: uniform float time;
+	geo.setFloat("time", treeSpeed/10);
 }
 
 void MainGame::GameInstructions()

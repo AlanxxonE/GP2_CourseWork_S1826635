@@ -31,6 +31,11 @@ private:
 	void MeshMovement(); //method that lets the user move the mesh left or right based on the keyboard inputs
 	void TreeMovement(); //methods that manages automatically how the tree should behave by making the mesh move and change positions
 
+	void SetFogShaderAttributes(); //links the fog shader up and let it changes the attributes of it
+	void SetToonShaderAttributes(); //links the toon shader up and let it changes the attributes of it
+	void SetRimShaderAttributes(); //links the rim shader up and let it changes the attributes of it
+	void SetGeoShaderAttributes(); //links the geo shader up and let it changes the attributes of it
+
 	//method that loads up in the console window, before the game loop method is executed, in order to show the game instructions
 	void GameInstructions(); 
 
@@ -47,7 +52,7 @@ private:
 	Mesh wpMesh, bgMesh, trMesh, lfMesh;
 	Camera myCamera;
 	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
-	Shader shader;
+	Shader shader, fog, toon, rim, geo;
 	Audio audioDevice;
 
 	int treePos; //the variable that holds the different positions the tree can spawn upon

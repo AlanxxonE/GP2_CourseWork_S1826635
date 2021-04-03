@@ -7,13 +7,13 @@ Shader::Shader()
 
 }
 
-void Shader::init(const std::string& filename)
+void Shader::init(const std::string& filenameVert, const std::string& filenameFrag)
 {
 	program = glCreateProgram(); //create the shader program
 
 	//load the two shaders from file and define the type of shader
-	shaders[0] = CreateShader(LoadShader("..\\res\\shader.vert"), GL_VERTEX_SHADER);
-	shaders[1] = CreateShader(LoadShader("..\\res\\shader.frag"), GL_FRAGMENT_SHADER);
+	shaders[0] = CreateShader(LoadShader(filenameVert), GL_VERTEX_SHADER);
+	shaders[1] = CreateShader(LoadShader(filenameFrag), GL_FRAGMENT_SHADER);
 
 	for (unsigned int i = 0; i < NUM_SHADERS; i++)
 	{
@@ -31,6 +31,33 @@ void Shader::init(const std::string& filename)
 	CheckShaderError(program, GL_VALIDATE_STATUS, true, "Error: Shader program not valid"); //check for validation error
 
 	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform"); //setup the uniform with the shader program
+}
+
+void Shader::initGeo()
+{
+	program = glCreateProgram(); // create shader program (openGL saves as ref number)
+	geoShaders[0] = CreateShader(LoadShader("..\\res\\shaderGeoText.vert"), GL_VERTEX_SHADER); // create vertex shader
+	geoShaders[1] = CreateShader(LoadShader("..\\res\\shaderGeoText.geom"), GL_GEOMETRY_SHADER); // create fragment shader
+	geoShaders[2] = CreateShader(LoadShader("..\\res\\shaderGeoText.frag"), GL_FRAGMENT_SHADER); // create fragment shader
+
+
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		glAttachShader(program, geoShaders[i]); //add all our shaders to the shader program "shaders" 
+	}
+
+	glBindAttribLocation(program, 0, "VertexPosition"); // associate attribute variable with our shader program attribute (in this case attribute vec3 position;)
+	glBindAttribLocation(program, 1, "VertexTexCoord");
+	glBindAttribLocation(program, 2, "VertexNormal");
+
+	glLinkProgram(program); //create executables that will run on the GPU shaders
+	CheckShaderError(program, GL_LINK_STATUS, true, "Error: Shader program linking failed"); // cheack for error
+
+	glValidateProgram(program); //check the entire program is valid
+	CheckShaderError(program, GL_VALIDATE_STATUS, true, "Error: Shader program not valid");
+
+	uniforms[TRANSFORM_U] = glGetUniformLocation(program, "transform"); // associate with the location of uniform variable within a program
+
 }
 
 Shader::~Shader()
