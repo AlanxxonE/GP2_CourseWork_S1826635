@@ -461,10 +461,12 @@ void MainGame::SetGeoShaderAttributes()
 	float randX = ((float)rand() / (RAND_MAX));
 	float randY = ((float)rand() / (RAND_MAX));
 	float randZ = ((float)rand() / (RAND_MAX));
+
 	// Frag: uniform float randColourX; uniform float randColourY; uniform float randColourZ;
-	geo.setFloat("randColourX", randX);
-	geo.setFloat("randColourY", randY);
-	geo.setFloat("randColourZ", randZ);
+	//geo.setFloat("randColourX", randX);
+	//geo.setFloat("randColourY", randY);
+	//geo.setFloat("randColourZ", randZ);
+
 	// Geom: uniform float time;
 	geo.setFloat("time", treeSpeed/10);
 }
@@ -512,6 +514,8 @@ void MainGame::GameInstructions()
 	cout << "\n" << "A & D to fly Left and Right respectively!" << "\n";
 
 	cout << "\n" << "UP & DOWN arrow keys to focus the Woodpecker eyesight!" << "\n";
+
+	cout << "\n" << "LEFT & RIGHT arrow keys to see the Woodpecker peripheral view!" << "\n";
 
 	cout << "\n" << "Avoid hitting the trees or the Woodpecker will faint!" << "\n";
 }
