@@ -9,6 +9,7 @@
 #include "transform.h"
 #include "Camera.h"
 #include "Audio.h"
+#include "SkyBox.h"
 
 enum class GameState{PLAY, EXIT};
 
@@ -36,6 +37,8 @@ private:
 	void SetRimShaderAttributes(); //links the rim shader up and let it changes the attributes of it
 	void SetGeoShaderAttributes(); //links the geo shader up and let it changes the attributes of it
 
+	void DrawSkyBox();
+
 	//method that loads up in the console window, before the game loop method is executed, in order to show the game instructions
 	void GameInstructions(); 
 
@@ -52,8 +55,11 @@ private:
 	Mesh wpMesh, bgMesh, trMesh, lfMesh;
 	Camera myCamera;
 	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
-	Shader shader, fog, toon, rim, geo;
+	Shader shader, fog, toon, rim, geo, sky;
 	Audio audioDevice;
+
+	Skybox skyBox;
+	vector<std::string> skyFaces;
 
 	int treePos; //the variable that holds the different positions the tree can spawn upon
 

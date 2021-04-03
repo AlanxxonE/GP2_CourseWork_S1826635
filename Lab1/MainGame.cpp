@@ -4,7 +4,7 @@
 #include <Windows.h>
 
 unsigned int indices[] = { 0, 1, 2 };
-Transform woodpeckerTransform, treeTransform, backgroundTransformOne, backgroundTransformTwo, fallTransform, fallTransformOne, fallTransformTwo;
+Transform woodpeckerTransform, treeTransform, /*backgroundTransformOne, backgroundTransformTwo,*/ fallTransform, fallTransformOne, fallTransformTwo;
 
 MainGame::MainGame()
 {
@@ -35,7 +35,7 @@ void MainGame::initSystems()
 
 	wpMesh.loadModel("..\\res\\Woodpecker.obj"); //load 3D model from file, model loaded: Bird Woodpecker
 
-	bgMesh.loadModel("..\\res\\Background.obj"); //load 3D model from file, model loaded: Background Poster
+	//bgMesh.loadModel("..\\res\\Background.obj"); //load 3D model from file, model loaded: Background Poster
 
 	trMesh.loadModel("..\\res\\Tree.obj"); //load 3D model from file, model loaded: Leafless Maple Tree
 
@@ -46,7 +46,7 @@ void MainGame::initSystems()
 	trMesh.SetSphereRad(100);
 
 	woodpeckerTexture.init("..\\res\\feather.jpg"); //initialise a texture loading it from folder, texture loaded: Black Feathers
-	backgroundTexture.init("..\\res\\leaf.jpg"); //initialise a texture loading it from folder, texture loaded: Background Forest Leaves
+	//backgroundTexture.init("..\\res\\leaf.jpg"); //initialise a texture loading it from folder, texture loaded: Background Forest Leaves
 	treeTexture.init("..\\res\\bark.jpg"); //initialise a texture loading it from folder, texture loaded: Maple Tree Bark
 	fallTexture.init("..\\res\\fall.jpg"); //initialise a texture loading it from folder, texture loaded: Red Maple Falling Leaf
 
@@ -59,6 +59,18 @@ void MainGame::initSystems()
 	rim.init("..\\res\\shaderRim.vert", "..\\res\\shaderRim.frag"); //initialise rim shader
 
 	geo.initGeo(); //initialise geo shader
+
+	vector<std::string> faces
+	{
+		"..\\res\\skybox\\forestRightV2.jpg",
+		"..\\res\\skybox\\forestLeftV2.jpg",
+		"..\\res\\skybox\\forestTopV2.jpg",
+		"..\\res\\skybox\\forestBottomV2.jpg",
+		"..\\res\\skybox\\forestFrontV2.jpg",
+		"..\\res\\skybox\\forestBackV2.jpg"
+	};
+
+	skyBox.init(faces);
 
 	flyScore = 0; //assign the starting fly score value
 
@@ -79,14 +91,14 @@ void MainGame::initSystems()
 void MainGame::initTransforms()
 {
 	//set the position, rotation and scale of the first background transform
-	backgroundTransformOne.SetPos(glm::vec3(100, 0, 200));
-	backgroundTransformOne.SetRot(glm::vec3(0, 1.58f, 0));
-	backgroundTransformOne.SetScale(glm::vec3(2, 3, 2));
+	//backgroundTransformOne.SetPos(glm::vec3(100, 0, 200));
+	//backgroundTransformOne.SetRot(glm::vec3(0, 1.58f, 0));
+	//backgroundTransformOne.SetScale(glm::vec3(2, 3, 2));
 	
 	//set the position, rotation and scale of the second background transform
-	backgroundTransformTwo.SetPos(glm::vec3(-100, 0, 200));
-	backgroundTransformTwo.SetRot(glm::vec3(0, 1.58f, 0));
-	backgroundTransformTwo.SetScale(glm::vec3(2, 3, 2));
+	//backgroundTransformTwo.SetPos(glm::vec3(-100, 0, 200));
+	//backgroundTransformTwo.SetRot(glm::vec3(0, 1.58f, 0));
+	//backgroundTransformTwo.SetScale(glm::vec3(2, 3, 2));
 
 	//set the rotation and scale of the falling leaves transforms
 	fallTransform.SetRot(glm::vec3(1, 1.58f, 0));
@@ -100,7 +112,8 @@ void MainGame::initTransforms()
 	woodpeckerTransform.SetScale(glm::vec3(200, 200, 200));
 
 	//set the position of the tree transform
-	treeTransform.SetPos(glm::vec3(0, -30, treeSpeed));
+	treeTransform.SetScale(glm::vec3(1,2,1));
+	treeTransform.SetPos(glm::vec3(0, -100, treeSpeed));
 }
 
 void MainGame::gameLoop()
@@ -185,14 +198,14 @@ void MainGame::drawGame()
 
 	//updates the shader with the first and second background transforms information
 	//binds the background leaves texture, draws the two poster meshes
-	shader.Update(backgroundTransformOne, myCamera);
-	backgroundTexture.Bind(0);
+	//shader.Update(backgroundTransformOne, myCamera);
+	//backgroundTexture.Bind(0);
 
-	bgMesh.Draw();
+	//bgMesh.Draw();
 
-	shader.Update(backgroundTransformTwo, myCamera);
+	//shader.Update(backgroundTransformTwo, myCamera);
 
-	bgMesh.Draw();
+	//bgMesh.Draw();
 
 	//updates the shader with the fallen leaves transforms information
 	//binds the falling leaf texture, draws the three maple leaf meshes
@@ -208,6 +221,8 @@ void MainGame::drawGame()
 	shader.Update(fallTransformTwo, myCamera);
 
 	lfMesh.Draw();
+
+	DrawSkyBox();
 
 	//previous clear display
 	//_gameDisplay.ClearDisplay(); //method that clears the display
@@ -290,21 +305,21 @@ void MainGame::CameraMovement()
 		}
 	}
 
-	//if (GetAsyncKeyState(VK_RIGHT))
-	//{
-	//	if (rotateCameraX > -0.5f)
-	//	{
-	//		rotateCameraX -= 0.01f; //right arrow key to rotate the camera right
-	//	}
-	//}
+	if (GetAsyncKeyState(VK_RIGHT))
+	{
+		if (rotateCameraX > -5)
+		{
+			rotateCameraX -= 0.01f; //right arrow key to rotate the camera right
+		}
+	}
 
-	//if (GetAsyncKeyState(VK_LEFT))
-	//{
-	//	if (rotateCameraX < 0.5f)
-	//	{
-	//		rotateCameraX += 0.01f; //left arrow key to rotate the camera left
-	//	}
-	//}
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		if (rotateCameraX < 5)
+		{
+			rotateCameraX += 0.01f; //left arrow key to rotate the camera left
+		}
+	}
 
 	//camera methods to update the new position and rotation of the camera
 	myCamera.moveCamera(glm::vec3(0.0f, 0.0f, moveCameraZ));
@@ -341,15 +356,15 @@ void MainGame::TreeMovement()
 	//checks the tree position variable value and assigns a new transform position X value to generate the tree in a different X point in space
 	if (treePos == 0)
 	{
-		treeTransform.SetPos(glm::vec3(10, -40, treeSpeed));
+		treeTransform.SetPos(glm::vec3(10, -100, treeSpeed));
 	}
 	else if (treePos == 1)
 	{
-		treeTransform.SetPos(glm::vec3(0, -40, treeSpeed));
+		treeTransform.SetPos(glm::vec3(0, -100, treeSpeed));
 	}
 	else
 	{
-		treeTransform.SetPos(glm::vec3(-10, -40, treeSpeed));
+		treeTransform.SetPos(glm::vec3(-10, -100, treeSpeed));
 	}
 
 	//updates the tree speed value until it goes past the camera position
@@ -445,6 +460,14 @@ void MainGame::SetGeoShaderAttributes()
 	geo.setFloat("randColourZ", randZ);
 	// Geom: uniform float time;
 	geo.setFloat("time", treeSpeed/10);
+}
+
+void MainGame::DrawSkyBox()
+{
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.textureID);
+
+	skyBox.draw(&myCamera);
 }
 
 void MainGame::GameInstructions()
