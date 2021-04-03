@@ -60,6 +60,8 @@ void MainGame::initSystems()
 
 	geo.initGeo(); //initialise geo shader
 
+	emap.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
+
 	vector<std::string> faces
 	{
 		"..\\res\\skybox\\forestRightV2.jpg",
@@ -102,11 +104,11 @@ void MainGame::initTransforms()
 
 	//set the rotation and scale of the falling leaves transforms
 	fallTransform.SetRot(glm::vec3(1, 1.58f, 0));
-	fallTransform.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+	//fallTransform.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 	fallTransformOne.SetRot(glm::vec3(1, 1.58f, 0));
-	fallTransformOne.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+	//fallTransformOne.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 	fallTransformTwo.SetRot(glm::vec3(1, 1.58f, 0));
-	fallTransformTwo.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
+	//fallTransformTwo.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 
 	//set the scale of the woodpecker transform
 	woodpeckerTransform.SetScale(glm::vec3(200, 200, 200));
@@ -125,10 +127,6 @@ void MainGame::gameLoop()
 		processInput(); //check if the game is still running and process events
 
 		drawGame(); //method responsible for drawing textures and meshes inside the display window
-
-		SetFogShaderAttributes();
-		SetToonShaderAttributes();
-		SetRimShaderAttributes();
 
 		//method that constantly check if a collision happened between two specific meshes
 		CheckCollision(wpMesh.GetSpherePos(), wpMesh.GetSphereRad(), trMesh.GetSpherePos(), trMesh.GetSphereRad());
@@ -190,6 +188,7 @@ void MainGame::drawGame()
 	//updates the shader with the tree transform information
 	//binds the tree texture, draws the maple tree mesh and sets the collision sphere based on the transform position plus an offset from the ground
 	shader.Bind();
+
 	shader.Update(treeTransform, myCamera);
 	treeTexture.Bind(0);
 
@@ -209,16 +208,24 @@ void MainGame::drawGame()
 
 	//updates the shader with the fallen leaves transforms information
 	//binds the falling leaf texture, draws the three maple leaf meshes
-	shader.Update(fallTransform, myCamera);
+	emap.Bind();
+
+	SetEMapShaderAttributes();
+
+	emap.Update(fallTransform, myCamera);
 	fallTexture.Bind(0);
 
 	lfMesh.Draw();
 
-	shader.Update(fallTransformOne, myCamera);
+	SetEMapShaderAttributes1();
+
+	emap.Update(fallTransformOne, myCamera);
 
 	lfMesh.Draw();
 
-	shader.Update(fallTransformTwo, myCamera);
+	SetEMapShaderAttributes2();
+
+	emap.Update(fallTransformTwo, myCamera);
 
 	lfMesh.Draw();
 
@@ -403,7 +410,7 @@ void MainGame::TreeMovement()
 	//the three different transforms for the different leaves are then updated
 	if (fallSpeed > -20)
 	{
-		fallSpeed -= 0.01f;
+		fallSpeed -= 0.005f;
 	}
 	else
 	{
@@ -460,6 +467,30 @@ void MainGame::SetGeoShaderAttributes()
 	geo.setFloat("randColourZ", randZ);
 	// Geom: uniform float time;
 	geo.setFloat("time", treeSpeed/10);
+}
+
+void MainGame::SetEMapShaderAttributes()
+{
+	emap.setMat4("projection", myCamera.GetProjection());
+	emap.setMat4("view", myCamera.GetView());
+	emap.setMat4("model", fallTransformOne.GetModel());
+	emap.setVec3("cameraPos", myCamera.GetPos());
+}
+
+void MainGame::SetEMapShaderAttributes1()
+{
+	emap.setMat4("projection", myCamera.GetProjection());
+	emap.setMat4("view", myCamera.GetView());
+	emap.setMat4("model", fallTransform.GetModel());
+	emap.setVec3("cameraPos", myCamera.GetPos());
+}
+
+void MainGame::SetEMapShaderAttributes2()
+{
+	emap.setMat4("projection", myCamera.GetProjection());
+	emap.setMat4("view", myCamera.GetView());
+	emap.setMat4("model", fallTransformTwo.GetModel());
+	emap.setVec3("cameraPos", myCamera.GetPos());
 }
 
 void MainGame::DrawSkyBox()

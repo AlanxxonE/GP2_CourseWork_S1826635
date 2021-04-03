@@ -36,7 +36,9 @@ private:
 	void SetToonShaderAttributes(); //links the toon shader up and let it changes the attributes of it
 	void SetRimShaderAttributes(); //links the rim shader up and let it changes the attributes of it
 	void SetGeoShaderAttributes(); //links the geo shader up and let it changes the attributes of it
-
+	void SetEMapShaderAttributes();
+	void SetEMapShaderAttributes1();
+	void SetEMapShaderAttributes2();
 	void DrawSkyBox();
 
 	//method that loads up in the console window, before the game loop method is executed, in order to show the game instructions
@@ -55,7 +57,7 @@ private:
 	Mesh wpMesh, bgMesh, trMesh, lfMesh;
 	Camera myCamera;
 	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
-	Shader shader, fog, toon, rim, geo, sky;
+	Shader shader, fog, toon, rim, geo, sky, emap;
 	Audio audioDevice;
 
 	Skybox skyBox;
