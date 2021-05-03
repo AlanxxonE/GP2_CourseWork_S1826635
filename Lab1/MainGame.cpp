@@ -193,7 +193,7 @@ void MainGame::drawGame()
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
-	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, 100, 0));
+	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, +100, 0));
 
 	//updates the shader with the first and second background transforms information
 	//binds the background leaves texture, draws the two poster meshes

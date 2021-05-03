@@ -6,6 +6,9 @@ Display::Display()
 	_window = nullptr; //initialise to generate null access violation for debugging. 
 	_screenWidth = 1024.0f; //sets the window width
 	_screenHeight = 768.0f; //sets the window height
+
+	//_screenWidth = 1920.0f; //sets the window width
+	//_screenHeight = 1080.0f; //sets the window height
 }
 
 Display::~Display()

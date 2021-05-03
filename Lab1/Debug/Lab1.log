@@ -1,8 +1,7 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Lab1.vcxproj, Labs.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  MainGame.cpp
-C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(14,9): warning C4930: 'Shader fog(void)': prototyped function not called (was a variable definition intended?)
-C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(13,9): warning C4930: 'Shader shader(void)': prototyped function not called (was a variable definition intended?)
-C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(15,9): warning C4930: 'Shader toon(void)': prototyped function not called (was a variable definition intended?)
-C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(17,9): warning C4930: 'Shader geo(void)': prototyped function not called (was a variable definition intended?)
-C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(16,9): warning C4930: 'Shader rim(void)': prototyped function not called (was a variable definition intended?)
+  Display.cpp
+C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\Display.cpp(7,17): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\Display.cpp(8,18): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\Display.cpp(85,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\Display.cpp(90,9): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   Lab1.vcxproj -> C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Debug\GP2_CourseWork_S1826635.exe
