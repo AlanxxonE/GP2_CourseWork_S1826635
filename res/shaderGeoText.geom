@@ -16,7 +16,6 @@ out vec2 TexCoords;
 //Uniform variabe
 uniform float time;
 
-
 vec4 explode(vec4 position, vec3 normal)
 {
 //Amout of explosion
@@ -51,4 +50,4 @@ void main()
     TexCoords = gs_in[2].texCoords;
     EmitVertex();
     EndPrimitive();
-}  
+} 

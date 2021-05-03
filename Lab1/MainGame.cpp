@@ -193,7 +193,7 @@ void MainGame::drawGame()
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
-	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, +30, 0));
+	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, 100, 0));
 
 	//updates the shader with the first and second background transforms information
 	//binds the background leaves texture, draws the two poster meshes
@@ -458,9 +458,9 @@ void MainGame::SetRimShaderAttributes()
 
 void MainGame::SetGeoShaderAttributes()
 {
-	float randX = ((float)rand() / (RAND_MAX));
-	float randY = ((float)rand() / (RAND_MAX));
-	float randZ = ((float)rand() / (RAND_MAX));
+	//float randX = ((float)rand() / (RAND_MAX));
+	//float randY = ((float)rand() / (RAND_MAX));
+	//float randZ = ((float)rand() / (RAND_MAX));
 
 	// Frag: uniform float randColourX; uniform float randColourY; uniform float randColourZ;
 	//geo.setFloat("randColourX", randX);
