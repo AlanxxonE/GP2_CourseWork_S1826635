@@ -15,6 +15,8 @@ MainGame::MainGame()
 	Shader toon();
 	Shader rim();
 	Shader geo();
+	Shader emap();
+	Shader tree();
 }
 
 MainGame::~MainGame()
@@ -60,7 +62,9 @@ void MainGame::initSystems()
 
 	geo.initGeo(); //initialise geo shader
 
-	emap.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag");
+	emap.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag"); //initialise emap shader
+
+	tree.init("..\\res\\treeShaderVert.vert","..\\res\\treeShaderFrag.frag"); //initialise tree shader
 
 	vector<std::string> faces
 	{
@@ -187,9 +191,11 @@ void MainGame::drawGame()
 
 	//updates the shader with the tree transform information
 	//binds the tree texture, draws the maple tree mesh and sets the collision sphere based on the transform position plus an offset from the ground
-	shader.Bind();
+	tree.Bind();
 
-	shader.Update(treeTransform, myCamera);
+	SetTreeShaderAttributes();
+
+	tree.Update(treeTransform, myCamera);
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
@@ -493,6 +499,31 @@ void MainGame::SetEMapShaderAttributes2()
 	emap.setMat4("view", myCamera.GetView());
 	emap.setMat4("model", fallTransformTwo.GetModel());
 	emap.setVec3("cameraPos", myCamera.GetPos());
+}
+
+void MainGame::SetTreeShaderAttributes()
+{
+	//if (treeColor == 0.3f)
+	//{
+	//	treeColor = 0.5f;
+	//}
+	//else if (treeColor == 0.5f)
+	//{
+	//	treeColor = 0.8f;
+	//}
+	//else
+	//{
+	//	treeColor = 0.3f;
+	//}
+	if (treeColor < 0.2)
+	{
+		tree.setVec2("u_lineSize", glm::vec2(10, 10));
+		tree.setFloat("u_speedColor", treeColor += 0.001f);
+	}
+	else
+	{
+		treeColor = 0;
+	}
 }
 
 void MainGame::DrawSkyBox()
