@@ -26,8 +26,9 @@ void main()
     vec2 toCenter = vec2(0.5,0.5)-st;
     float angle = atan(toCenter.y,toCenter.x);
 
+    //float distance = length(abs(st) - sin(u_speedColor));
 
-    gl_FragColor = mix(texture2D(diffuse, texCoord0) , vec4(hsb2rgb(vec3(1.0 * angle,1.0,1.0)),1.0), 0.1);
+    gl_FragColor = fract(mix(texture2D(diffuse, texCoord0) , vec4(hsb2rgb(vec3(1.0 * angle,1.0,1.0)),1.0), 0.1));
 
 	//vec2 st = gl_FragCoord.xy / u_lineSize;
 	//gl_FragColor = mix(texture2D(diffuse, texCoord0) , vec4(0.0,st.y,sin(st.x * u_speedColor), 0.5) , 0.1);
