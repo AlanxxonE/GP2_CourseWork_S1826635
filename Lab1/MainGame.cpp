@@ -384,7 +384,7 @@ void MainGame::TreeMovement()
 	//when that happens the tree position value is changed adn resets the original tree speed value
 	if (treeSpeed > -50)
 	{
-		treeSpeed -= 0.1f;
+		treeSpeed -= 0.05f;
 	}
 	else
 	{
@@ -474,7 +474,7 @@ void MainGame::SetGeoShaderAttributes()
 	//geo.setFloat("randColourZ", randZ);
 
 	// Geom: uniform float time;
-	geo.setFloat("time", treeSpeed/10);
+	geo.setFloat("time", treeSpeed/5);
 }
 
 void MainGame::SetEMapShaderAttributes()
@@ -515,15 +515,19 @@ void MainGame::SetTreeShaderAttributes()
 	//{
 	//	treeColor = 0.3f;
 	//}
-	if (treeColor < 0.2)
-	{
-		tree.setVec2("u_lineSize", glm::vec2(10, 10));
-		tree.setFloat("u_speedColor", treeColor += 0.001f);
-	}
-	else
-	{
-		treeColor = 0;
-	}
+
+	tree.setVec2("u_lineSize", glm::vec2(400, 400));
+	tree.setFloat("u_speedColor", treeColor += 0.002f);
+
+	//if (treeColor < 2)
+	//{
+	//	tree.setVec2("u_lineSize", glm::vec2(400, 400));
+	//	tree.setFloat("u_speedColor", treeColor += 0.001f);
+	//}
+	//else
+	//{
+	//	treeColor = 0;
+	//}
 }
 
 void MainGame::DrawSkyBox()
