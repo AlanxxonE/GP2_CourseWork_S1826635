@@ -384,7 +384,7 @@ void MainGame::TreeMovement()
 	//when that happens the tree position value is changed adn resets the original tree speed value
 	if (treeSpeed > -50)
 	{
-		treeSpeed -= 0.05f;
+		treeSpeed -= 0.03f;
 	}
 	else
 	{
