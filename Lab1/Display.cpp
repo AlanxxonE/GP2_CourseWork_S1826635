@@ -8,7 +8,7 @@ Display::Display()
 	//_screenHeight = 768.0f; //sets the window height
 
 	_screenWidth = 1920.0f; //sets the window width
-	_screenHeight = 1080.0f; //sets the window height
+	_screenHeight = 1000.0f; //sets the window height
 }
 
 Display::~Display()

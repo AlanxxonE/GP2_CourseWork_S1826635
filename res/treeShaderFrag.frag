@@ -1,69 +1,77 @@
 #version 120
 
+//Define the quality bar of rendering the outcome of the shader
 #ifdef GL_ES
-precision highp float;
+precision highp float; //high value
 #endif
 
+//Vectors that vary based on the changes of the vertices inside the game
 varying vec2 texCoord0;
 varying vec3 normalsPass;
 
+//Variable that specifies the information of which texture is provided for the shader
 uniform sampler2D diffuse;
 
+//Uniform that provides a canvas size to set the amount of tiles where the neon lines will be implemented
 uniform vec2 u_lineSize;
 
+//Uniform that provides an ever growing counter to give the time value for animating the outcome of functions
 uniform float u_speedColor;
 
-vec3 hsb2rgb( in vec3 c )
+//Method that provides the HSB color spectrum, enabling the neon colors to be related to the canvas spatial coordinates 
+vec3 neonColors( in vec3 previousColor )
 {
-    vec3 rgb = sin(c.x + vec3(3.985,1.653,4.000) * u_speedColor);
-    return rgb;
+    //Multiplying an everchaning variable provides a vivid neon color to pop up at any given spacial position
+    vec3 neonColor = sin(previousColor.x + vec3(3.985,1.653,4.000) * u_speedColor);
+
+    return neonColor;
 }
 
-float random (in vec2 _st) 
+//Method that returns a single deterministic float value based on the canvas resolution
+float randomLineDirection(in vec2 canvasValue) 
 {
-    return fract(sin(dot(_st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+    //Having fract and sin to generate a chaotic value upon the wave, using the dot method to have single value outcome from vector multiplication
+    return fract(sin(dot(canvasValue.xy, vec2(12.9898,78.233))) * 43758.5453123);
 }
 
-vec2 truchetPattern(in vec2 _st, in float _index)
+vec2 truchetPatternTiles(in vec2 tileValue, in float tileOrientation)
 {
-    _index = fract(((_index + (u_speedColor / 2.0))*2.0));
+    tileOrientation = fract(((tileOrientation + (u_speedColor / 2.0))*2.0));
 
-    if (_index > 0.75) {
-        _st = vec2(1.0) - _st;
-    } else if (_index > 0.5) {
-        _st = vec2(1.0-_st.x,_st.y);
-    } else if (_index > 0.25) {
-        _st = 1.0-vec2(1.0-_st.x,_st.y);
+    if (tileOrientation > 0.75) 
+    {
+        tileValue = vec2(1.0) - tileValue;
+    } 
+    else if (tileOrientation > 0.5) 
+    {
+        tileValue = vec2(1.0-tileValue.x,tileValue.y);
+    } 
+    else if (tileOrientation > 0.25) 
+    {
+        tileValue = 1.0-vec2(1.0-tileValue.x,tileValue.y);
     }
-    return _st;
+
+    return tileValue;
 }
 
 void main()
 {
-    vec2 st = gl_FragCoord.xy / u_lineSize;
+    vec2 canvasValue = gl_FragCoord.xy / u_lineSize;
 
-    st *= 20.0;
+    //Amount of tiles in the table
+    canvasValue *= 20.0;
 
-    vec2 ipos = floor(st);  
-    vec2 fpos = fract(st);  
+    vec2 tableTileValue = floor(canvasValue);  
+    vec2 tableDivisionValue = fract(canvasValue);  
 
-    vec2 tile = truchetPattern(fpos, random( ipos ));
+    vec2 tile = truchetPatternTiles(tableDivisionValue, randomLineDirection(tableTileValue));
 
     float color = 0.0;
 
-    color = smoothstep(tile.x-0.1,tile.x * 0.893,tile.y)-
-            smoothstep(tile.x - 0.1,tile.x+0.1,tile.y);
+    color = smoothstep(tile.x - 0.1, tile.x * 0.893, tile.y) - smoothstep(tile.x - 0.1, tile.x + 0.1, tile.y);
 
-    vec2 toCenter = vec2(0.5,0.5)-st;
-    float angle = atan(toCenter.y,toCenter.x);
+    vec2 toCenter = vec2(0.5, 0.5) - canvasValue;
+    float angle = atan(toCenter.y, toCenter.x);
 
-    gl_FragColor = fract(mix(texture2D(diffuse, texCoord0),vec4(vec3(color * vec4(hsb2rgb(vec3(1.0 * angle,1.0,1.0)),1.0)),1.0),0.5));
-
-    //float distance = length(abs(st) - sin(u_speedColor));
-
-    //gl_FragColor = fract(mix(texture2D(diffuse, texCoord0) , vec4(hsb2rgb(vec3(1.0 * angle,1.0,1.0)),1.0), 0.1));
-
-	//vec2 st = gl_FragCoord.xy / u_lineSize;
-	//gl_FragColor = mix(texture2D(diffuse, texCoord0) , vec4(0.0,st.y,sin(st.x * u_speedColor), 0.5) , 0.1);
-	//gl_FragColor = texture2D(diffuse, texCoord0) * vec4(abs(sin(u_speedColor)), abs(sin(u_speedColor * 4.0)), abs(sin(u_speedColor / 2.0)), 0.5);
+    gl_FragColor = fract(mix(texture2D(diffuse, texCoord0), vec4(vec3(color * vec4(neonColors(vec3(1.0 * angle, 1.0, 1.0)), 1.0)), 1.0), 0.5));
 }

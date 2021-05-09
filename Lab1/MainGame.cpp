@@ -10,6 +10,8 @@ MainGame::MainGame()
 {
 	_gameState = GameState::PLAY; //sets the gamestate to PLAY
 	Display* _gameDisplay = new Display(); //new display
+
+	//initialise shader's constructors
 	Shader shader();
 	Shader fog();
 	Shader toon();
@@ -49,7 +51,7 @@ void MainGame::initSystems()
 
 	woodpeckerTexture.init("..\\res\\feather.jpg"); //initialise a texture loading it from folder, texture loaded: Black Feathers
 	//backgroundTexture.init("..\\res\\leaf.jpg"); //initialise a texture loading it from folder, texture loaded: Background Forest Leaves
-	treeTexture.init("..\\res\\bark.jpg"); //initialise a texture loading it from folder, texture loaded: Maple Tree Bark
+	treeTexture.init("..\\res\\revisitedBark.jpg"); //initialise a texture loading it from folder, texture loaded: Maple Tree Bark
 	fallTexture.init("..\\res\\fall.jpg"); //initialise a texture loading it from folder, texture loaded: Red Maple Falling Leaf
 
 	shader.init("..\\res\\shader.vert", "..\\res\\shader.frag"); //initialise new shader
@@ -66,6 +68,7 @@ void MainGame::initSystems()
 
 	tree.init("..\\res\\treeShaderVert.vert","..\\res\\treeShaderFrag.frag"); //initialise tree shader
 
+	//set up skybox faces
 	vector<std::string> faces
 	{
 		"..\\res\\skybox\\forestRightV2.jpg",
@@ -76,7 +79,7 @@ void MainGame::initSystems()
 		"..\\res\\skybox\\forestBackV2.jpg"
 	};
 
-	skyBox.init(faces);
+	skyBox.init(faces); //initialise skybox using the set faces
 
 	flyScore = 0; //assign the starting fly score value
 
@@ -124,7 +127,7 @@ void MainGame::initTransforms()
 
 void MainGame::gameLoop()
 {
-	GameInstructions();
+	GameInstructions(); //Prints the game instructions on the dev console
 
 	while (_gameState != GameState::EXIT) //when gamestate changes to exit the while is executed no more
 	{
@@ -133,7 +136,8 @@ void MainGame::gameLoop()
 		drawGame(); //method responsible for drawing textures and meshes inside the display window
 
 		//method that constantly check if a collision happened between two specific meshes
-		CheckCollision(wpMesh.GetSpherePos(), wpMesh.GetSphereRad(), trMesh.GetSpherePos(), trMesh.GetSphereRad());
+		//Disabled collision check for shaders displaying purposes
+		//CheckCollision(wpMesh.GetSpherePos(), wpMesh.GetSphereRad(), trMesh.GetSpherePos(), trMesh.GetSphereRad());
 
 		CameraMovement(); //method that handles the movements of the camera based on user inputs
 		MeshMovement(); //method that handles the movements of the woodpecker mesh based on user inputs
@@ -181,7 +185,7 @@ void MainGame::drawGame()
 	//binds the woodpecker texture, draws the bird mesh and sets the collision sphere based on the transform position
 	geo.Bind();
 
-	SetGeoShaderAttributes();
+	SetGeoShaderAttributes(); //method that links the geo shader in order to pass uniforms information 
 
 	geo.Update(woodpeckerTransform, myCamera);
 	woodpeckerTexture.Bind(0);
@@ -193,13 +197,13 @@ void MainGame::drawGame()
 	//binds the tree texture, draws the maple tree mesh and sets the collision sphere based on the transform position plus an offset from the ground
 	tree.Bind();
 
-	SetTreeShaderAttributes();
+	SetTreeShaderAttributes(); //method that links the tree shader in order to pass uniforms information 
 
 	tree.Update(treeTransform, myCamera);
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
-	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, +100, 0));
+	trMesh.SetSpherePos(*treeTransform.GetPos() + glm::vec3(0, +90, 0));
 
 	//updates the shader with the first and second background transforms information
 	//binds the background leaves texture, draws the two poster meshes
@@ -216,26 +220,26 @@ void MainGame::drawGame()
 	//binds the falling leaf texture, draws the three maple leaf meshes
 	emap.Bind();
 
-	SetEMapShaderAttributes();
+	SetEMapShaderAttributes(); //method that links the emap shader in order to pass uniforms information for the first leaf
 
 	emap.Update(fallTransform, myCamera);
 	fallTexture.Bind(0);
 
 	lfMesh.Draw();
 
-	SetEMapShaderAttributes1();
+	SetEMapShaderAttributes1(); //method that links the emap shader in order to pass uniforms information for the second leaf
 
 	emap.Update(fallTransformOne, myCamera);
 
 	lfMesh.Draw();
 
-	SetEMapShaderAttributes2();
+	SetEMapShaderAttributes2(); //method that links the emap shader in order to pass uniforms information for the third leaf
 
 	emap.Update(fallTransformTwo, myCamera);
 
 	lfMesh.Draw();
 
-	DrawSkyBox();
+	DrawSkyBox(); //method that draws the skybox wrapping the display window
 
 	//previous clear display
 	//_gameDisplay.ClearDisplay(); //method that clears the display
@@ -384,7 +388,7 @@ void MainGame::TreeMovement()
 	//when that happens the tree position value is changed adn resets the original tree speed value
 	if (treeSpeed > -50)
 	{
-		treeSpeed -= 0.03f;
+		treeSpeed -= 0.08f;
 	}
 	else
 	{
@@ -416,7 +420,7 @@ void MainGame::TreeMovement()
 	//the three different transforms for the different leaves are then updated
 	if (fallSpeed > -20)
 	{
-		fallSpeed -= 0.005f;
+		fallSpeed -= 0.01f;
 	}
 	else
 	{
@@ -479,6 +483,7 @@ void MainGame::SetGeoShaderAttributes()
 
 void MainGame::SetEMapShaderAttributes()
 {
+	//Sets the emap attributes based on the second leaf transform
 	emap.setMat4("projection", myCamera.GetProjection());
 	emap.setMat4("view", myCamera.GetView());
 	emap.setMat4("model", fallTransformOne.GetModel());
@@ -487,6 +492,7 @@ void MainGame::SetEMapShaderAttributes()
 
 void MainGame::SetEMapShaderAttributes1()
 {
+	//Sets the emap attributes based on the first leaf transform
 	emap.setMat4("projection", myCamera.GetProjection());
 	emap.setMat4("view", myCamera.GetView());
 	emap.setMat4("model", fallTransform.GetModel());
@@ -495,6 +501,7 @@ void MainGame::SetEMapShaderAttributes1()
 
 void MainGame::SetEMapShaderAttributes2()
 {
+	//Sets the emap attributes based on the third leaf transform
 	emap.setMat4("projection", myCamera.GetProjection());
 	emap.setMat4("view", myCamera.GetView());
 	emap.setMat4("model", fallTransformTwo.GetModel());
@@ -503,31 +510,8 @@ void MainGame::SetEMapShaderAttributes2()
 
 void MainGame::SetTreeShaderAttributes()
 {
-	//if (treeColor == 0.3f)
-	//{
-	//	treeColor = 0.5f;
-	//}
-	//else if (treeColor == 0.5f)
-	//{
-	//	treeColor = 0.8f;
-	//}
-	//else
-	//{
-	//	treeColor = 0.3f;
-	//}
-
-	tree.setVec2("u_lineSize", glm::vec2(400, 400));
-	tree.setFloat("u_speedColor", treeColor += 0.002f);
-
-	//if (treeColor < 2)
-	//{
-	//	tree.setVec2("u_lineSize", glm::vec2(400, 400));
-	//	tree.setFloat("u_speedColor", treeColor += 0.001f);
-	//}
-	//else
-	//{
-	//	treeColor = 0;
-	//}
+	tree.setVec2("u_lineSize", glm::vec2(400, 400)); //Provides a canvas size to set the amount of tiles where the neon lines will be implemented
+	tree.setFloat("u_speedColor", treeColor += 0.002f); //Provides an ever growing counter to give the time value for animating the outcome of functions
 }
 
 void MainGame::DrawSkyBox()
@@ -535,7 +519,7 @@ void MainGame::DrawSkyBox()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.textureID);
 
-	skyBox.draw(&myCamera);
+	skyBox.draw(&myCamera); //Draws the skybox based on the camera values
 }
 
 void MainGame::GameInstructions()
