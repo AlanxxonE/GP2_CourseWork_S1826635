@@ -66,7 +66,7 @@ void MainGame::initSystems()
 
 	emap.init("..\\res\\shaderReflection.vert", "..\\res\\shaderReflection.frag"); //initialise emap shader
 
-	tree.init("..\\res\\treeShaderVert.vert","..\\res\\treeShaderFrag.frag"); //initialise tree shader
+	dnle.init("..\\res\\DynamicNeonLinesEngravingVert.vert","..\\res\\DynamicNeonLinesEngravingFrag.frag"); //initialise tree shader
 
 	//set up skybox faces
 	vector<std::string> faces
@@ -195,11 +195,11 @@ void MainGame::drawGame()
 
 	//updates the shader with the tree transform information
 	//binds the tree texture, draws the maple tree mesh and sets the collision sphere based on the transform position plus an offset from the ground
-	tree.Bind();
+	dnle.Bind();
 
-	SetTreeShaderAttributes(); //method that links the tree shader in order to pass uniforms information 
+	SetDnleShaderAttributes(); //method that links the tree shader in order to pass uniforms information 
 
-	tree.Update(treeTransform, myCamera);
+	dnle.Update(treeTransform, myCamera);
 	treeTexture.Bind(0);
 
 	trMesh.Draw();
@@ -508,10 +508,10 @@ void MainGame::SetEMapShaderAttributes2()
 	emap.setVec3("cameraPos", myCamera.GetPos());
 }
 
-void MainGame::SetTreeShaderAttributes()
+void MainGame::SetDnleShaderAttributes()
 {
-	tree.setVec2("u_lineSize", glm::vec2(400, 400)); //Provides a canvas size to set the amount of tiles where the neon lines will be implemented
-	tree.setFloat("u_speedColor", treeColor += 0.002f); //Provides an ever growing counter to give the time value for animating the outcome of functions
+	dnle.setVec2("u_lineSize", glm::vec2(400, 400)); //Provides a canvas size to set the amount of tiles where the neon lines will be implemented
+	dnle.setFloat("u_speedColor", dnleCounter += 0.002f); //Provides an ever growing counter to give the time value for animating the outcome of functions
 }
 
 void MainGame::DrawSkyBox()

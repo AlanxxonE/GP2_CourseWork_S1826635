@@ -39,7 +39,7 @@ private:
 	void SetEMapShaderAttributes(); //links the emap shader up and let it changes the attributes of the first emap model
 	void SetEMapShaderAttributes1(); //links the emap shader up and let it changes the attributes of the second emap model
 	void SetEMapShaderAttributes2(); //links the emap shader up and let it changes the attributes of the third emap model
-	void SetTreeShaderAttributes(); //links the tree shader up and let it changes the attributes of the tree
+	void SetDnleShaderAttributes(); //links the tree shader up and let it changes the attributes of the tree
 	void DrawSkyBox();
 
 	//method that loads up in the console window, before the game loop method is executed, in order to show the game instructions
@@ -58,7 +58,7 @@ private:
 	Mesh wpMesh, bgMesh, trMesh, lfMesh;
 	Camera myCamera;
 	Texture woodpeckerTexture, backgroundTexture, treeTexture, fallTexture;
-	Shader shader, fog, toon, rim, geo, sky, emap, tree;
+	Shader shader, fog, toon, rim, geo, sky, emap, dnle;
 	Audio audioDevice;
 
 	Skybox skyBox;
@@ -67,8 +67,9 @@ private:
 	int treePos; //the variable that holds the different positions the tree can spawn upon
 
 	//the variables that dictates the rate of the falling speed of the leaves
-	//the speed of the incoming tree and how many points the player gains based on how much time passes avoiding ostacles 
-	float treeSpeed, fallSpeed, flyScore, treeColor = 1.0f; 
+	//the speed of the incoming tree and how many points the player gains based on how much time passes avoiding ostacles
+	//the ever growing counter for displaying the neon colors of the dynamic neon lines engraving shader
+	float treeSpeed, fallSpeed, flyScore, dnleCounter = 100.0f;
 
 	float moveCameraZ; //the value for the camera movement
 	float rotateCameraX; //the value for the camera rotation

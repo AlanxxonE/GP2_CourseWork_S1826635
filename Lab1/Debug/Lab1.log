@@ -7,4 +7,6 @@ C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\L
 C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(17,9): warning C4930: 'Shader toon(void)': prototyped function not called (was a variable definition intended?)
 C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(19,9): warning C4930: 'Shader geo(void)': prototyped function not called (was a variable definition intended?)
 C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Lab1\MainGame.cpp(18,9): warning C4930: 'Shader rim(void)': prototyped function not called (was a variable definition intended?)
+  main.cpp
+  Generating Code...
   Lab1.vcxproj -> C:\Users\aless\Desktop\University\MODULES\3RD_YEAR\GP2\GP2_CourseWork_S1826635\Debug\GP2_CourseWork_S1826635.exe
